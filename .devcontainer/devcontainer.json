@@ -1,0 +1,23 @@
+{
+	"build": {
+	  "dockerfile": "../Dockerfile",
+	  "target": "dev"
+	},
+	"runArgs": [
+	  "--network=host",
+	  "--env-file",
+	  ".env"
+	],
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+		  "dbaeumer.vscode-eslint",
+		  "ms-python.python",
+		  "ms-python.black-formatter",
+		  "ms-azuretools.vscode-docker",
+		  "arturock.gitstash",
+		  "mhutchie.git-graph"
+		]
+	  }
+	}
+  } 
