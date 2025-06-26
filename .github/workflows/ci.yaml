@@ -1,0 +1,72 @@
+name: Build and Push container
+run-name: Build and Push container
+on:
+  workflow_dispatch:
+  #schedule:
+  #  - cron: "0 10 * * *"
+  push:
+    branches:
+      - 'main'
+      - 'master'
+      - 'multi-agents-v2'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'main'
+      - 'master'
+env:
+  IMAGE: git.kvant.cloud/${{github.repository}}
+jobs:
+  build_concierge_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set current time
+        uses: https://github.com/gerred/actions/current-time@master
+        id: current_time
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to git.kvant.cloud registry
+        uses: docker/login-action@v3
+        with:
+          registry: git.kvant.cloud
+          username: ${{ vars.ITNB_PACKAGE_WRITER_USERNAME }}
+          password: ${{ secrets.ITNB_PACKAGE_WRITER_TOKEN }}
+      
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{env.IMAGE}}
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+
+      - name: Build and push to gitea registry
+        uses: docker/build-push-action@v6
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          context: .
+          provenance: mode=max
+          sbom: true
+          build-args: |
+            BUILD_DATE=${{ steps.current_time.outputs.time }}
+          cache-from: |
+            type=registry,ref=${{ env.IMAGE }}:buildcache
+            type=registry,ref=${{ env.IMAGE }}:${{ github.ref_name }}
+            type=registry,ref=${{ env.IMAGE }}:main
+          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache,mode=max,image-manifest=true
