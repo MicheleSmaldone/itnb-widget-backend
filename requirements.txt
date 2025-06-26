@@ -9,4 +9,5 @@ pydantic>=2.4.2
 httpx>=0.25.0
 crewai-tools>=0.45.0
 tiktoken>=0.5.1
-groundx>=2.3.5 
+groundx>=2.3.5
+mem0ai==0.1.111 
