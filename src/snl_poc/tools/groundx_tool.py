@@ -134,7 +134,8 @@ class GroundXTool(BaseTool):
                 '.doc': 'doc',
                 '.xls': 'xls',
                 '.ppt': 'ppt',
-                '.md': 'md'
+                '.md': 'md',
+                '.json': 'json'
             }
             
             # Process files
