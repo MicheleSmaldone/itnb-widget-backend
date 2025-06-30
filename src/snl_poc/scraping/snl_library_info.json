@@ -1,0 +1,23 @@
+{
+  "main_page": {
+    "opening_hours": {
+      "special_notices": [
+        "Reading room exceptionally closed on 16 June 2025."
+      ]
+    },
+    "exhibitions": [],
+    "collections": {},
+    "contact_info": {
+      "contact_page": "https://www.nb.admin.ch/snl/en/home/contact.html"
+    }
+  },
+  "user_services": {
+    "library_services": {},
+    "digital_collections": {},
+    "prints_drawings": {},
+    "literary_archives": {},
+    "data_protection": {},
+    "bibliopass": {}
+  },
+  "scraped_at": "2025-06-30 07:55:53"
+}

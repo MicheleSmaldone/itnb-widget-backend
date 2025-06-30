@@ -95,11 +95,14 @@ class SnlPoc():
             output_log_file: Optional filename for the complete conversation log
         """
         try:
+            print(f"[DEBUG] chat() called with query: {query}")
+            print(f"[DEBUG] history type: {type(history)}")
+            print(f"[DEBUG] history value: {history}")
             inputs = {
                 "user_message": query,
                 "history": history if history else ""
             }
-            
+            print(f"[DEBUG] inputs to crew_instance.kickoff: {inputs}")
             # Create crew instance
             crew_instance = self.crew()
             
@@ -113,7 +116,9 @@ class SnlPoc():
                 crew_instance.output_log_file = output_log_file
             
             result = crew_instance.kickoff(inputs=inputs)
+            print(f"[DEBUG] result from crew_instance.kickoff: {result}")
             return str(result)
         except Exception as e:
             logger.error(f"Error during chat: {str(e)}")
+            print(f"[DEBUG] Exception in chat: {e}")
             return f"Sorry, I encountered an error: {str(e)}"

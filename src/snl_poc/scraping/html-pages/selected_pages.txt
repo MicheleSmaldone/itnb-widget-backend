@@ -1,0 +1,23 @@
+
+--- info pages
+
+[X] "https://www.nb.admin.ch/snl/en/home.html"
+
+[X] "https://www.nb.admin.ch/snl/en/home/contact.html"
+
+[X] "https://www.nb.admin.ch/snl/en/home/about-us/opening-hours.html",
+
+
+- [USER-SERVICES] 
+[X] "https://www.nb.admin.ch/snl/en/home/services/user-services.html"
+ 
+[X] "https://www.nb.admin.ch/snl/en/home/services/user-services/library.html"
+
+[X] "https://www.nb.admin.ch/snl/en/home/services/user-services/library/user-registration.html"
+
+[X] "https://www.nb.admin.ch/snl/en/home/services/user-services/digital-collections.html"
+
+[X] "https://www.nb.admin.ch/snl/en/home/services/user-services/bibliopass.html"
+
+
+
