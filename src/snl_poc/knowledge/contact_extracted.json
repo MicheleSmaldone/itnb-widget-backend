@@ -1,0 +1,55 @@
+{
+  "main_address": "Swiss National Library Hallwylstrasse 15 3003\n                                \n                                \n                                    Bern Switzerland Phone +41 58 462 89 35 Fax\n                            +41 58 462 84 08 E-mail",
+  "emails": [
+    "graphische-sammlung@nb.admin.ch",
+    "cdn@nb.admin.ch",
+    "Graphische-Sammlung@nb.admin.ch",
+    "info@nb.admin.ch",
+    "fnoffice@nb.admin.ch",
+    "arch.lit@nb.admin.ch"
+  ],
+  "phones": [
+    "+41 58 462 89 35",
+    "+41 58 462 89 71",
+    "+41 58 462 92 58"
+  ],
+  "departments": [
+    "Prints and drawings department Phone +41 58 462 89 71 Fax\n                            +41 58 462 84 08 E-mail",
+    "Swiss Literary Archives Phone +41 58 462 92 58 Fax\n                            +41 58 462 84 08 E-mail"
+  ],
+  "links": [
+    {
+      "text": "Change of address",
+      "href": "/snl/en/home/services/user-services/library/addrchange.html"
+    },
+    {
+      "text": "Loan",
+      "href": "/snl/en/home/services/user-services/library.html"
+    },
+    {
+      "text": "Interlibrary loans",
+      "href": "/snl/en/home/information-professionals/mediation/ill.html"
+    },
+    {
+      "text": "Prints and Drawings Department",
+      "href": "/snl/en/home/about-us/pdd/user-services.html"
+    },
+    {
+      "text": "Swiss Literary Archives",
+      "href": "/snl/de/home/ueber-uns/sla/benutzungsla.html"
+    },
+    {
+      "text": "Forms",
+      "href": "/snl/en/home/about-us/contact/formulare.html"
+    },
+    {
+      "text": "Suggestions and criticisms",
+      "href": "/snl/en/home/about-us/contact/suggestions.html"
+    },
+    {
+      "text": "Opening hours",
+      "href": "/snl/en/home/about-us/opening-hours.html"
+    }
+  ],
+  "source_url": "https://www.nb.admin.ch/snl/en/home/contact.html"
+}

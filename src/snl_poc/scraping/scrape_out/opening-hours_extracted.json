@@ -1,0 +1,53 @@
+{
+  "special_notice": "Due to an event, the reading room will be closed on Monday, 16 June 2025.",
+  "opening_hours": [
+    {
+      "label": "",
+      "value": "Monday–Friday"
+    },
+    {
+      "label": "Library",
+      "value": "9 a.m. – 6 p.m."
+    },
+    {
+      "label": "Book return box (near the entrance)",
+      "value": "7.30 a.m. - 6 p.m."
+    },
+    {
+      "label": "Exhibition",
+      "value": "9 a.m. – 6 p.m."
+    },
+    {
+      "label": "Prints and Drawings Department",
+      "value": "by appointment"
+    },
+    {
+      "label": "Swiss Literary Archives",
+      "value": "by appointment"
+    },
+    {
+      "label": "Bistrot L’esprit nouveau",
+      "value": "8.30 a.m. – 4.30 p.m."
+    }
+  ],
+  "extraordinary_closures": [],
+  "links": [
+    {
+      "text": "Text alerts about closures: subscribe",
+      "href": "/snl/en/home/about-us/opening-hours/closures-alert.html"
+    },
+    {
+      "text": "Text alerts about closures: unsubscribe",
+      "href": "/snl/en/home/about-us/opening-hours/stop-closures-alert.html"
+    },
+    {
+      "text": "Facebook",
+      "href": "http://www.facebook.com/schweizerische.nationalbibliothek"
+    },
+    {
+      "text": "Twitter",
+      "href": "https://twitter.com/NB_schweiz"
+    }
+  ],
+  "source_url": "https://www.nb.admin.ch/snl/en/home/about-us/opening-hours.html"
+}

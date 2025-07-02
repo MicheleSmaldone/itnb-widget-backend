@@ -1,23 +1,31 @@
 {
-	"build": {
-	  "dockerfile": "../Dockerfile",
-	  "target": "dev"
-	},
-	"runArgs": [
-	  "--network=host",
-	  "--env-file",
-	  ".env"
-	],
-	"customizations": {
-	  "vscode": {
-		"extensions": [
-		  "dbaeumer.vscode-eslint",
-		  "ms-python.python",
-		  "ms-python.black-formatter",
-		  "ms-azuretools.vscode-docker",
-		  "arturock.gitstash",
-		  "mhutchie.git-graph"
-		]
-	  }
-	}
-  } 
+  // 1) Build from your Dockerfile's "dev" target
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "target": "dev"
+  },
+
+  // 2) Mount your project into /app (where the Dockerfile expects it)
+  "workspaceFolder": "/app",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind,consistency=cached",
+
+  // 3) Network and env-file
+  "runArgs": [
+    "--network=host"
+  ],
+  "envFile": ".env",      // <-- use this instead of runArgs
+
+  // 4) Any VS Code extensions you want inside the container
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-azuretools.vscode-docker",
+        "arturock.gitstash",
+        "mhutchie.git-graph"
+      ]
+    }
+  }
+}

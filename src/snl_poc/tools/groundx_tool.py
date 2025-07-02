@@ -8,6 +8,7 @@ from groundx import GroundX, Document
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -30,15 +31,17 @@ class GroundXTool(BaseTool):
     """
     args_schema: Type[BaseModel] = GroundXSearchSchema
     bucket_name: str = "itnb"
-    client: Any = None
-    _bucket_id: int = None
-    _knowledge_dir: str = None
+    client: Optional[Any] = None
+    _bucket_id: Optional[int] = None
+    _knowledge_dir: Optional[str] = None
     _ingested_files: Dict[str, bool] = {}
+    max_chunks: int = 4  # Configurable max chunks to retrieve
     
     def __init__(
         self,
         bucket_name: str = "itnb",
-        knowledge_dir: str = None,
+        knowledge_dir: Optional[str] = None,
+        max_chunks: int = 4,
         **kwargs
     ):
         """Initialize the GroundX tool."""
@@ -51,6 +54,7 @@ class GroundXTool(BaseTool):
         
         self.client = GroundX(api_key=api_key)
         self.bucket_name = bucket_name
+        self.max_chunks = max_chunks
         
         # Set knowledge directory
         self._knowledge_dir = knowledge_dir or os.path.join(
@@ -234,42 +238,82 @@ class GroundXTool(BaseTool):
         logger.warning(f"Reached maximum wait attempts. Processing may still be ongoing.")
     
     def _run(self, query: str) -> str:
-        """Run GroundX search with provided query."""
         try:
+            print(f"[DEBUG GROUNDX] _run() called with query: '{query[:50]}...' (length: {len(query)})")
+            
+            # Validate query is not empty
             if not query or not query.strip():
-                return "Please provide a search query."
+                print(f"[DEBUG GROUNDX] Empty query detected, returning error message")
+                return "Error: Search query cannot be empty. Please provide a valid search term."
             
-            logger.info(f"Searching for: {query}")
+            # Limit chunks at API level for efficiency
+            print(f"[DEBUG GROUNDX] Requesting max {self.max_chunks} chunks from GroundX API")
             
-            # Execute search
+            retrieval_start = time.time()
             search_result = self.client.search.content(
                 id=self._bucket_id,
-                query=query,
-                verbosity=2  # Include detailed results
+                query=query.strip(),  # Ensure query is trimmed
+                verbosity=2,
+                n=self.max_chunks  # Limit results at API level
             )
+            retrieval_time = time.time() - retrieval_start
+            print(f"[PROFILE] Retrieval took {retrieval_time:.2f} seconds")
             
-            # Log the search result structure only in debug mode
-            if logger.level <= logging.DEBUG:
-                logger.debug(f"Search result structure: {search_result}")
+            sources_set = set()
+            texts = []
+            total_chunks_found = 0
             
-            # Return search.text as specified in the documentation
-            if hasattr(search_result, 'search') and hasattr(search_result.search, 'text'):
-                return search_result.search.text
-            
-            # Fallback to individual results
-            results = []
             if hasattr(search_result, 'search') and hasattr(search_result.search, 'results'):
-                for result in search_result.search.results:
-                    if hasattr(result, 'text'):
-                        results.append(result.text)
+                total_chunks_found = len(search_result.search.results)
+                print(f"[DEBUG GROUNDX] Received {total_chunks_found} chunks from GroundX (requested max {self.max_chunks})")
+                
+                for i, result in enumerate(search_result.search.results):
+                    text = getattr(result, 'text', '')
+                    print(f"[DEBUG GROUNDX] Chunk {i+1} length: {len(text)} chars")
+                    print(f"[DEBUG GROUNDX] Raw chunk {i+1}: {text[:200]}...")
+                    try:
+                        chunk_data = json.loads(text)
+                        print(f"[DEBUG GROUNDX] Chunk {i+1} JSON keys: {list(chunk_data.keys())}")
+                        # Extract source_url if it exists
+                        if 'source_url' in chunk_data:
+                            source_url = chunk_data['source_url']
+                            sources_set.add(source_url)
+                            print(f"[DEBUG GROUNDX] Found source_url in chunk {i+1}: {source_url}")
+                        else:
+                            print(f"[DEBUG GROUNDX] No source_url found in chunk {i+1}")
+                        texts.append(text)
+                    except json.JSONDecodeError:
+                        print(f"[DEBUG GROUNDX] Chunk {i+1} is not valid JSON, using as plain text")
+                        texts.append(text)
+            else:
+                print(f"[DEBUG GROUNDX] No search results found in response")
             
-            if results:
-                return "\n\n".join(results)
+            print(f"[DEBUG GROUNDX] Using all {len(texts)} retrieved chunks (no post-retrieval limiting needed)")
             
-            return "No relevant information found."
+            # Combine all text content
+            content = "\n\n".join(texts)
+            
+            # Add sources in the format expected by frontend: [PRIMARY_SOURCE: url]
+            if sources_set:
+                sources_list = list(sources_set)
+                # Frontend expects individual [PRIMARY_SOURCE: url] markers for each source
+                primary_source_markers = []
+                for url in sources_list:
+                    primary_source_markers.append(f"[PRIMARY_SOURCE: {url}]")
+                
+                # Add all source markers to content
+                sources_text = "\n\n" + "\n".join(primary_source_markers)
+                content += sources_text
+                
+                print(f"[DEBUG GROUNDX] Added {len(sources_list)} source URLs in PRIMARY_SOURCE format")
+                print(f"[DEBUG GROUNDX] Primary source markers: {sources_text.strip()}")
+            
+            print(f"[DEBUG GROUNDX] Final content length: {len(content)} chars")
+            print(f"[DEBUG GROUNDX] Final content preview: {content[-200:]}")  # Last 200 chars to see sources
+            return content
         
         except Exception as e:
-            logger.error(f"Error searching documents: {str(e)}")
+            print(f"[DEBUG GROUNDX] Error in _run(): {str(e)}")
             return f"Error searching documents: {str(e)}"
     
     def test_search(self, query: str) -> str:
@@ -323,9 +367,9 @@ if __name__ == "__main__":
             query = " ".join(sys.argv[1:])
             logger.info(f"Testing search with query: {query}")
             result = tool.test_search(query)
-            print("\n--- SEARCH RESULTS ---\n")
-            print(result)
-            print("\n----------------------\n")
+            # print("\n--- SEARCH RESULTS ---\n")
+            # print(result)
+            # print("\n----------------------\n")
         # Otherwise try ingestion
         else:
             logger.info("No search query provided. Starting document ingestion...")

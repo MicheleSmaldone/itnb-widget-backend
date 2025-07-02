@@ -2,12 +2,18 @@ chat_task:
   description: >
     Answer the user's question: {user_message}
     
-    Use the available knowledge base to search for relevant information.
-    If there is conversation history, consider it for context: {history}
+    You have been provided with relevant context from the knowledge base: {groundx_context}
     
-    Provide a comprehensive and accurate response based on the available documentation.
-    If you cannot find relevant information, clearly state that.
+    
+    Use the provided knowledge base context to give a comprehensive, accurate and concise (50-100 words) response.
+    Base your answer entirely on the provided context. If the context doesn't contain relevant information, 
+    clearly state that the information is not available in the knowledge base.
+    
+    IMPORTANT: the search results will include [PRIMARY_SOURCE: URL] markers, 
+    you MUST include ALL of these markers in your final response exactly as provided.
+    Do not modify or remove the [PRIMARY_SOURCE: URL] format.
   expected_output: >
     A clear, helpful response to the user's question, grounded in the available knowledge base.
     Include relevant details and context from the documents when applicable.
+    [PRIMARY_SOURCE: URL] markers are provided in the search results, include ALL of them in your response.
   agent: rag_agent

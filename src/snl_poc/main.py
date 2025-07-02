@@ -3,10 +3,20 @@ import os
 import sys
 import warnings
 from dotenv import load_dotenv
-from mem0 import MemoryClient
+# from mem0 import MemoryClient  # Commented out to disable Mem0
 import datetime
 import logging
 from crew import SnlPoc
+import time
+
+# Silence all loggers by default
+logging.getLogger().setLevel(logging.WARNING)
+
+# Silence specific noisy libraries
+for noisy_logger in [
+    "httpx", "LiteLLM", "tools.groundx_tool", "uvicorn", "uvicorn.error", "uvicorn.access"  # Removed "mem0" since it's disabled
+]:
+    logging.getLogger(noisy_logger).setLevel(logging.WARNING)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
@@ -20,7 +30,7 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 load_dotenv()
 
 # Initialize Mem0 client (correct format)
-client = MemoryClient(api_key=os.getenv("MEM0_API_KEY"))
+# client = MemoryClient(api_key=os.getenv("MEM0_API_KEY"))  # Commented out to disable Mem0
 
 def run():
     """Run the CustomerZero chat loop for continuous interaction"""
@@ -84,22 +94,24 @@ def run():
         auto_save_file = os.path.join(output_dir, f"response_{timestamp}.md")
         
         # Use the crew's chat method which supports file saving
+        start = time.time()
         response = crew_instance.chat(
             user_input, 
             save_to_file=auto_save_file,
             history=chat_history,
             output_log_file=session_log_file
         )
+        print("LLM call took", time.time() - start)
         
         history.append(f"User: {user_input}")
         history.append(f"Assistant: {response}")
         
         # Store conversation in mem0 - must be a list of messages
-        messages = [
-            {"role": "user", "content": user_input},
-            {"role": "assistant", "content": response}
-        ]
-        client.add(messages, user_id="User", output_format="v1.1")
+        # messages = [
+        #     {"role": "user", "content": user_input},
+        #     {"role": "assistant", "content": response}
+        # ]
+        # client.add(messages, user_id="User", output_format="v1.1")  # Commented out to disable Mem0
         
         print(f"Assistant: {response}")
         print(f"\nResponse automatically saved to: {auto_save_file}")
