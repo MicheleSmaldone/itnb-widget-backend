@@ -11,6 +11,14 @@ import json
 import re
 import time
 
+# Translation support - lightweight and reliable
+try:
+    from deep_translator import GoogleTranslator
+    TRANSLATION_AVAILABLE = True
+    print("[DEBUG CREW] Translation module loaded successfully")
+except ImportError:
+    TRANSLATION_AVAILABLE = False
+    print("[DEBUG CREW] Translation module not available. Install with: pip install deep-translator")
 
 # Configure logging
 # logger = logging.get# logger(__name__)
@@ -49,9 +57,54 @@ class SnlPoc():
         )
         # Simple cache to prevent duplicate GroundX calls
         self._groundx_cache = {}
+        # Translation cache to avoid repeated translations
+        self._translation_cache = {}
         # # logger.info(f"Initialized LLM with model: {os.getenv('OPENAI_MODEL_NAME')}")
 
-  
+    def _translate_to_english(self, text: str) -> str:
+        """
+        Translate text to English for GroundX queries.
+        Uses lightweight deep-translator library without Node.js dependency.
+        Returns the original text if translation fails or if already in English.
+        """
+        if not TRANSLATION_AVAILABLE:
+            print("[DEBUG CREW] Translation not available, using original text")
+            return text
+        
+        if not text or not text.strip():
+            return text
+        
+        # Check cache first
+        cache_key = text.strip().lower()
+        if cache_key in self._translation_cache:
+            print(f"[DEBUG CREW] Using cached translation")
+            return self._translation_cache[cache_key]
+        
+        try:
+            # Use GoogleTranslator with auto-detection
+            translator = GoogleTranslator(source='auto', target='en')
+            translated_text = translator.translate(text)
+            
+            # If translation is the same as original, it's likely already in English
+            if translated_text.strip().lower() == text.strip().lower():
+                print(f"[DEBUG CREW] Text appears to be in English already")
+                self._translation_cache[cache_key] = text
+                return text
+            
+            if translated_text and translated_text.strip():
+                print(f"[DEBUG CREW] Translation successful: '{text[:50]}...' -> '{translated_text[:50]}...'")
+                self._translation_cache[cache_key] = translated_text
+                return translated_text
+            else:
+                print(f"[DEBUG CREW] Translation returned empty, using original text")
+                self._translation_cache[cache_key] = text
+                return text
+                
+        except Exception as e:
+            print(f"[DEBUG CREW] Translation failed: {e}, using original text")
+            self._translation_cache[cache_key] = text
+            return text
+
     @agent
     def rag_agent(self) -> Agent:
         """RAG knowledge retrieval agent"""
@@ -112,15 +165,19 @@ class SnlPoc():
                 print(f"[DEBUG CREW] Empty query detected, returning error message")
                 return "Error: Please provide a valid question or query. Empty queries cannot be processed."
             
-            # Check cache first to prevent duplicate calls
-            cache_key = query.strip().lower()
+            # Translate query to English for GroundX (if not already in English)
+            translated_query = self._translate_to_english(query)
+            print(f"[DEBUG CREW] Using query for GroundX: '{translated_query[:50]}...'")
+            
+            # Check cache first to prevent duplicate calls (use translated query for cache)
+            cache_key = translated_query.strip().lower()
             if cache_key in self._groundx_cache:
-                print(f"[DEBUG CREW] Using cached GroundX result for query")
+                print(f"[DEBUG CREW] Using cached GroundX result for translated query")
                 groundx_results = self._groundx_cache[cache_key]
             else:
-                # FORCE GroundX tool usage by calling it first
-                print(f"[DEBUG CREW] Calling GroundX tool directly before CrewAI...")
-                groundx_results = groundx_tool._run(query)
+                # FORCE GroundX tool usage by calling it with translated query
+                print(f"[DEBUG CREW] Calling GroundX tool with translated query...")
+                groundx_results = groundx_tool._run(translated_query)
                 # Only cache successful results (not error messages)
                 if not groundx_results.startswith("Error:"):
                     self._groundx_cache[cache_key] = groundx_results
@@ -134,13 +191,14 @@ class SnlPoc():
                 groundx_results = "There is no available information for me to assist you."
             
             # Include GroundX results in the input to ensure the agent uses them
+            # NOTE: Use ORIGINAL query for LLM, not translated version
             inputs = {
-                "user_message": query,
+                "user_message": query,  # Original query for LLM
                 "history": history if history else "",
                 "groundx_context": groundx_results  # Add GroundX results as context
             }
             
-            print(f"[DEBUG CREW] Starting CrewAI with inputs: user_message={len(query)} chars, history={len(history) if history else 0} chars, groundx_context={len(groundx_results)} chars")
+            print(f"[DEBUG CREW] Starting CrewAI with inputs: user_message={len(query)} chars (original), history={len(history) if history else 0} chars, groundx_context={len(groundx_results)} chars")
             print(f"[DEBUG CREW] GroundX context preview (last 200 chars): {groundx_results[-200:]}")
             
             crew_instance = self.crew()
