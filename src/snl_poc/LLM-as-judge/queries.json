@@ -1,0 +1,94 @@
+{
+  "test_queries": [
+    {
+      "id": 1,
+      "category": "Library Services and Registration",
+      "query": "What are the requirements to get a library card?",
+      "language": "en"
+    },
+    {
+      "id": 2,
+      "category": "Library Services and Registration", 
+      "query": "How can I register for library services?",
+      "language": "en"
+    },
+    {
+      "id": 3,
+      "category": "Library Services and Registration",
+      "query": "What documents can I borrow from the library?",
+      "language": "en"
+    },
+    {
+      "id": 4,
+      "category": "Opening Hours",
+      "query": "What are the library's opening hours?",
+      "language": "en"
+    },
+    {
+      "id": 5,
+      "category": "Opening Hours",
+      "query": "Is the library open on weekends?",
+      "language": "en"
+    },
+    {
+      "id": 6,
+      "category": "Opening Hours",
+      "query": "Are there different opening hours for special collections?",
+      "language": "en"
+    },
+    {
+      "id": 7,
+      "category": "Contact Information",
+      "query": "How can I contact the library?",
+      "language": "en"
+    },
+    {
+      "id": 8,
+      "category": "Contact Information",
+      "query": "What is the library's physical address?",
+      "language": "en"
+    },
+    {
+      "id": 9,
+      "category": "Contact Information",
+      "query": "Is there a specific email for interlibrary loans?",
+      "language": "en"
+    },
+    {
+      "id": 10,
+      "category": "User Services",
+      "query": "What special services does the library offer to users?",
+      "language": "en"
+    },
+    {
+      "id": 11,
+      "category": "User Services",
+      "query": "How does the interlibrary loan service work?",
+      "language": "en"
+    },
+    {
+      "id": 12,
+      "category": "User Services",
+      "query": "Can I access the library's digital collections remotely?",
+      "language": "en"
+    },
+    {
+      "id": 13,
+      "category": "Complex Query",
+      "query": "I want to visit the library this weekend. What are the opening hours and what documents do I need to bring for registration?",
+      "language": "en"
+    },
+    {
+      "id": 14,
+      "category": "Complex Query",
+      "query": "How can I contact the library about borrowing a book, and what are the borrowing policies?",
+      "language": "en"
+    },
+    {
+      "id": 15,
+      "category": "Complex Query",
+      "query": "What services are available online versus in-person at the library?",
+      "language": "en"
+    }
+  ]
+}
