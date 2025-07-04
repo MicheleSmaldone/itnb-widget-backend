@@ -1,3 +1,13 @@
 .env
 __pycache__/
 .DS_Store
+
+# Ignore all response markdown files anywhere
+**/response_*.md
+
+# Ignore conversation logs
+**/full_conversation_log.txt
+**/conversation_output.md
+
+# Ignore tool output files
+**/xray_*_output.txt
