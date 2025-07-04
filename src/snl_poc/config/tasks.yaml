@@ -1,19 +1,21 @@
 chat_task:
+  # 🟢 What the agent must do
   description: >
-    Answer the user's question: {user_message}
-    
-    You have been provided with relevant context from the knowledge base: {groundx_context}
-    
-    
-    Use the provided knowledge base context to give a comprehensive, accurate and concise (50-100 words) response.
-    Base your answer entirely on the provided context. If the context doesn't contain relevant information, 
-    clearly state that the information is not available in the knowledge base.
-    
-    IMPORTANT: the search results will include [PRIMARY_SOURCE: URL] markers, 
-    you MUST include ALL of these markers in your final response exactly as provided.
-    Do not modify or remove the [PRIMARY_SOURCE: URL] format.
+    • You are playing the *assistant* role.  
+    • Answer the user’s question (“{user_message}”) **in the same language** the
+      question was asked.  
+    • Base your reply **only** on the supplied knowledge-base snippets
+      (“{groundx_context}”). If nothing relevant is found, state this plainly.  
+    • Keep the answer concise: **50–100 words**.  
+    • Every URL already appears as **[PRIMARY_SOURCE: URL]** inside the context.
+      **Include *all* of those markers verbatim** in your answer, in any order
+      that reads naturally. *Never* invent or re-format them.
+
+  # 🟢 What a good response looks like
   expected_output: >
-    A clear, helpful response to the user's question, grounded in the available knowledge base.
-    Include relevant details and context from the documents when applicable.
-    [PRIMARY_SOURCE: URL] markers are provided in the search results, include ALL of them in your response.
+    • A clear, helpful, 50-100-word answer, written in the user’s language.  
+    • Contains every [PRIMARY_SOURCE: URL] marker exactly as seen in the context.  
+    • No other citations, no extra commentary.
+
+  # Which agent will run this task
   agent: rag_agent

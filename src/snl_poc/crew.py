@@ -128,6 +128,11 @@ class SnlPoc():
                 else:
                     print(f"[DEBUG CREW] GroundX returned error, not caching")
             
+            # Handle GroundX failures by substituting with neutral message
+            if groundx_results.startswith("Error:"):
+                print(f"[DEBUG CREW] GroundX failed, substituting with neutral message")
+                groundx_results = "There is no available information for me to assist you."
+            
             # Include GroundX results in the input to ensure the agent uses them
             inputs = {
                 "user_message": query,
