@@ -11,14 +11,8 @@ import json
 import re
 import time
 
-# Translation support - lightweight and reliable
-try:
-    from deep_translator import GoogleTranslator
-    TRANSLATION_AVAILABLE = True
-    print("[DEBUG CREW] Translation module loaded successfully")
-except ImportError:
-    TRANSLATION_AVAILABLE = False
-    print("[DEBUG CREW] Translation module not available. Install with: pip install deep-translator")
+# Remove Google Translate dependency - using LLM for translation instead
+print("[DEBUG CREW] Using LLM-based translation with infer-granite33-8b")
 
 # Configure logging
 # logger = logging.get# logger(__name__)
@@ -49,28 +43,38 @@ class SnlPoc():
 
     def __init__(self):
         """Initialize with OpenAI model"""
+        # Get model name with fallback
+        model_name = os.getenv("OPENAI_MODEL_NAME")
+        if not model_name:
+            raise ValueError("OPENAI_MODEL_NAME environment variable is required")
+            
         # Create LLM for all agents
         self.agent_llm = LLM(
-            model=os.getenv("OPENAI_MODEL_NAME"),
+            model=model_name,
             base_url=os.getenv("OPENAI_API_BASE"),
             api_key=os.getenv("OPENAI_API_KEY"),
         )
+        
+        model_name_translation = os.getenv("OPENAI_MODEL_NAME-2")
+
+        # Create separate LLM instance specifically for translation using granite
+        self.translation_llm = LLM(
+            model=model_name_translation,
+            base_url=os.getenv("OPENAI_API_BASE-2"),
+            api_key=os.getenv("OPENAI_API_KEY-2"),
+        )
+        
         # Simple cache to prevent duplicate GroundX calls
         self._groundx_cache = {}
         # Translation cache to avoid repeated translations
         self._translation_cache = {}
-        # # logger.info(f"Initialized LLM with model: {os.getenv('OPENAI_MODEL_NAME')}")
+        print(f"[DEBUG CREW] Initialized LLMs - Agent: {model_name}, Translation: infer-granite33-8b")
 
     def _translate_to_english(self, text: str) -> str:
         """
-        Translate text to English for GroundX queries.
-        Uses lightweight deep-translator library without Node.js dependency.
+        Translate text to English for GroundX queries using infer-granite33-8b.
         Returns the original text if translation fails or if already in English.
         """
-        if not TRANSLATION_AVAILABLE:
-            print("[DEBUG CREW] Translation not available, using original text")
-            return text
-        
         if not text or not text.strip():
             return text
         
@@ -81,24 +85,41 @@ class SnlPoc():
             return self._translation_cache[cache_key]
         
         try:
-            # Use GoogleTranslator with auto-detection
-            translator = GoogleTranslator(source='auto', target='en')
-            translated_text = translator.translate(text)
+            # Create translation prompt for the LLM
+            translation_prompt = f"""Translate the following text to English. If the text is already in English, return it unchanged. Only return the translated text, nothing else.
+
+Text to translate: {text}
+
+Translation:"""
             
-            # If translation is the same as original, it's likely already in English
-            if translated_text.strip().lower() == text.strip().lower():
+            print(f"[DEBUG CREW] Sending translation request to infer-granite33-8b for: '{text[:50]}...'")
+            
+            # Call the translation LLM
+            translated_response = self.translation_llm.call([{"role": "user", "content": translation_prompt}])
+            
+            print(f"[DEBUG CREW] Sending translation request to infer-granite33-8b for: '{translated_response[:50]}...'")
+
+            # Extract the translated text from the response
+            if hasattr(translated_response, 'content'):
+                translated_text = translated_response.content.strip()
+            else:
+                translated_text = str(translated_response).strip()
+            
+            # Basic validation of translation result
+            if not translated_text or len(translated_text) < 1:
+                print(f"[DEBUG CREW] Translation returned empty, using original text")
+                self._translation_cache[cache_key] = text
+                return text
+            
+            # If translation is very similar to original, it's likely already in English
+            if translated_text.lower().strip() == text.lower().strip():
                 print(f"[DEBUG CREW] Text appears to be in English already")
                 self._translation_cache[cache_key] = text
                 return text
             
-            if translated_text and translated_text.strip():
-                print(f"[DEBUG CREW] Translation successful: '{text[:50]}...' -> '{translated_text[:50]}...'")
-                self._translation_cache[cache_key] = translated_text
-                return translated_text
-            else:
-                print(f"[DEBUG CREW] Translation returned empty, using original text")
-                self._translation_cache[cache_key] = text
-                return text
+            print(f"[DEBUG CREW] Translation successful: '{text[:50]}...' -> '{translated_text[:50]}...'")
+            self._translation_cache[cache_key] = translated_text
+            return translated_text
                 
         except Exception as e:
             print(f"[DEBUG CREW] Translation failed: {e}, using original text")
@@ -158,7 +179,7 @@ class SnlPoc():
             output_log_file: Optional filename for the complete conversation log
         """
         try:
-            print(f"[DEBUG CREW] chat() called with query: '{query[:50]}...'")
+            print(f"[DEBUG CREW] chat() called with query: '{query[:50] if query else 'None'}...'")
             
             # Validate query is not empty before processing
             if not query or not query.strip():
