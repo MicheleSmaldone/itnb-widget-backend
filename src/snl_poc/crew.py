@@ -70,61 +70,71 @@ class SnlPoc():
         self._translation_cache = {}
         print(f"[DEBUG CREW] Initialized LLMs - Agent: {model_name}, Translation: infer-granite33-8b")
 
-    def _translate_to_english(self, text: str) -> str:
+    def _translate_and_classify(self, text: str) -> tuple[str, str]:
         """
-        Translate text to English for GroundX queries using infer-granite33-8b.
-        Returns the original text if translation fails or if already in English.
+        Translate text to English and classify query type.
+        Returns: (translated_text, query_type)
+        query_type: 'website' or 'thesis'
         """
         if not text or not text.strip():
-            return text
+            return text, 'website'
         
-        # Check cache first
+        # Check cache first (enhanced to include classification)
         cache_key = text.strip().lower()
         if cache_key in self._translation_cache:
-            print(f"[DEBUG CREW] Using cached translation")
+            print(f"[DEBUG CREW] Using cached translation and classification")
             return self._translation_cache[cache_key]
         
         try:
-            # Create translation prompt for the LLM
-            translation_prompt = f"""Translate the following text to English. If the text is already in English, return it unchanged. Only return the translated text, nothing else.
+            # Enhanced prompt for translation AND classification
+            classification_prompt = f"""You have two tasks:
 
-Text to translate: {text}
+1. TRANSLATE: Translate the following text to English. If already in English, return unchanged.
+2. CLASSIFY: Determine if this is a question about:
+   - 'website': Swiss National Library website information, general queries, procedures
+   - 'thesis': Discussion about a specific thesis document, analyzing thesis content
 
-Translation:"""
-            
-            print(f"[DEBUG CREW] Sending translation request to infer-granite33-8b for: '{text[:50]}...'")
-            
-            # Call the translation LLM
-            translated_response = self.translation_llm.call([{"role": "user", "content": translation_prompt}])
-            
-            print(f"[DEBUG CREW] Sending translation request to infer-granite33-8b for: '{translated_response[:50]}...'")
+Text: {text}
 
-            # Extract the translated text from the response
-            if hasattr(translated_response, 'content'):
-                translated_text = translated_response.content.strip()
+Respond in this exact format:
+TRANSLATION: [translated text]
+TYPE: [website/thesis]"""
+            
+            print(f"[DEBUG CREW] Sending translation+classification request for: '{text[:50]}...'")
+            
+            response = self.translation_llm.call([{"role": "user", "content": classification_prompt}])
+            
+            # Extract response content
+            if hasattr(response, 'content'):
+                response_text = response.content.strip()
             else:
-                translated_text = str(translated_response).strip()
+                response_text = str(response).strip()
             
-            # Basic validation of translation result
-            if not translated_text or len(translated_text) < 1:
-                print(f"[DEBUG CREW] Translation returned empty, using original text")
-                self._translation_cache[cache_key] = text
-                return text
+            # Parse the structured response
+            lines = response_text.split('\n')
+            translated_text = text  # fallback
+            query_type = 'website'  # fallback
             
-            # If translation is very similar to original, it's likely already in English
-            if translated_text.lower().strip() == text.lower().strip():
-                print(f"[DEBUG CREW] Text appears to be in English already")
-                self._translation_cache[cache_key] = text
-                return text
+            for line in lines:
+                if line.startswith('TRANSLATION:'):
+                    translated_text = line.replace('TRANSLATION:', '').strip()
+                elif line.startswith('TYPE:'):
+                    type_value = line.replace('TYPE:', '').strip().lower()
+                    if type_value in ['website', 'thesis']:
+                        query_type = type_value
             
-            print(f"[DEBUG CREW] Translation successful: '{text[:50]}...' -> '{translated_text[:50]}...'")
-            self._translation_cache[cache_key] = translated_text
-            return translated_text
+            print(f"[DEBUG CREW] Classification result: '{translated_text[:50]}...' -> {query_type}")
+            
+            # Cache the result
+            result = (translated_text, query_type)
+            self._translation_cache[cache_key] = result
+            return result
                 
         except Exception as e:
-            print(f"[DEBUG CREW] Translation failed: {e}, using original text")
-            self._translation_cache[cache_key] = text
-            return text
+            print(f"[DEBUG CREW] Translation+classification failed: {e}, using defaults")
+            result = (text, 'website')
+            self._translation_cache[cache_key] = result
+            return result
 
     @agent
     def rag_agent(self) -> Agent:
@@ -139,12 +149,32 @@ Translation:"""
         )
 
     @task
-    def chat_task(self) -> Task:
-        """Chat task for processing user queries"""
+    def website_chat_task(self) -> Task:
+        """Chat task for website-related queries (current functionality)"""
         return Task(
-            config=self.tasks_config['chat_task'], # type: ignore[index]
+            config=self.tasks_config['website_chat_task'],
             agent=self.rag_agent(),
             output_file="conversation_output.md"
+        )
+
+    @task  
+    def thesis_chat_task(self) -> Task:
+        """Chat task for thesis discussion"""
+        return Task(
+            config=self.tasks_config['thesis_chat_task'],
+            agent=self.thesis_agent(),
+            output_file="conversation_output.md"
+        )
+
+    @agent
+    def thesis_agent(self) -> Agent:
+        """Agent specialized for thesis discussion"""
+        return Agent(
+            config=self.agents_config['thesis_agent'],
+            verbose=True,
+            allow_delegation=False,
+            llm=self.agent_llm,
+            tools=[]
         )
 
     @crew
@@ -170,76 +200,79 @@ Translation:"""
         )
     
     def chat(self, query: str, save_to_file: str = None, history: str = None, output_log_file: str = None) -> str:
-        """Process a chat query using the crew with hierarchical delegation
-        
-        Args:
-            query: User's query/message
-            save_to_file: Optional filename to save the output
-            history: Optional conversation history string
-            output_log_file: Optional filename for the complete conversation log
-        """
+        """Process a chat query using a single unified call"""
         try:
             print(f"[DEBUG CREW] chat() called with query: '{query[:50] if query else 'None'}...'")
             
-            # Validate query is not empty before processing
             if not query or not query.strip():
-                print(f"[DEBUG CREW] Empty query detected, returning error message")
-                return "Error: Please provide a valid question or query. Empty queries cannot be processed."
+                return "Error: Please provide a valid question or query."
             
-            # Translate query to English for GroundX (if not already in English)
-            translated_query = self._translate_to_english(query)
-            print(f"[DEBUG CREW] Using query for GroundX: '{translated_query[:50]}...'")
+            # Translate and classify the query
+            translated_query, query_type = self._translate_and_classify(query)
+            print(f"[DEBUG CREW] Query classified as: {query_type}")
             
-            # Check cache first to prevent duplicate calls (use translated query for cache)
+            # Get GroundX results (cached)
             cache_key = translated_query.strip().lower()
             if cache_key in self._groundx_cache:
-                print(f"[DEBUG CREW] Using cached GroundX result for translated query")
                 groundx_results = self._groundx_cache[cache_key]
             else:
-                # FORCE GroundX tool usage by calling it with translated query
-                print(f"[DEBUG CREW] Calling GroundX tool with translated query...")
                 groundx_results = groundx_tool._run(translated_query)
-                # Only cache successful results (not error messages)
                 if not groundx_results.startswith("Error:"):
                     self._groundx_cache[cache_key] = groundx_results
-                    print(f"[DEBUG CREW] GroundX returned {len(groundx_results)} chars, cached for future use")
-                else:
-                    print(f"[DEBUG CREW] GroundX returned error, not caching")
             
-            # Handle GroundX failures by substituting with neutral message
             if groundx_results.startswith("Error:"):
-                print(f"[DEBUG CREW] GroundX failed, substituting with neutral message")
                 groundx_results = "There is no available information for me to assist you."
             
-            # Include GroundX results in the input to ensure the agent uses them
-            # NOTE: Use ORIGINAL query for LLM, not translated version
-            inputs = {
-                "user_message": query,  # Original query for LLM
-                "history": history if history else "",
-                "groundx_context": groundx_results  # Add GroundX results as context
-            }
+            # Create unified prompt based on query type
+            if query_type == 'thesis':
+                system_prompt = """You are an Academic Thesis Discussion Assistant. 
+
+Rules:
+- Answer in the SAME language as the user's question
+- Use ONLY information from the provided GroundX context
+- Keep response concise: 75-150 words
+- Quote directly: "According to the thesis: '[exact text]'"
+- End with "REFERENCE:" followed by quoted excerpts
+- Do NOT use information from memory"""
+            else:
+                system_prompt = """You are a Swiss National Library Assistant.
+
+Rules:
+- Answer in the SAME language as the user's question  
+- Use ONLY information from the provided GroundX context
+- Keep response concise: 50-100 words
+- Include ALL [PRIMARY_SOURCE: URL] markers exactly as given
+- Do NOT add or modify any citations"""
             
-            print(f"[DEBUG CREW] Starting CrewAI with inputs: user_message={len(query)} chars (original), history={len(history) if history else 0} chars, groundx_context={len(groundx_results)} chars")
-            print(f"[DEBUG CREW] GroundX context preview (last 200 chars): {groundx_results[-200:]}")
+            # Create the unified prompt
+            user_prompt = f"""Question: {query}
+
+History: {history if history else "None"}
+
+GroundX Context:
+{groundx_results}
+
+Answer:"""
             
-            crew_instance = self.crew()
-            if save_to_file:
-                crew_instance.tasks[0].output_file = save_to_file
-            if output_log_file:
-                crew_instance.output_log_file = output_log_file
-            
+            # Direct LLM call (skip CrewAI overhead)
+            print(f"[DEBUG CREW] Making direct LLM call for {query_type} mode")
             llm_start = time.time()
-            result = crew_instance.kickoff(inputs=inputs)
-            llm_time = time.time() - llm_start
-            print(f"[PROFILE] LLM/Agent call took {llm_time:.2f} seconds")
             
-            # Get the raw result as string and return it directly (no post-processing)
-            formatted_result = str(result)
-            print(f"[DEBUG CREW] Raw LLM result type: {type(result)}")
-            print(f"[DEBUG CREW] Raw LLM result length: {len(formatted_result)} chars")
-            print(f"[DEBUG CREW] Raw LLM result: {formatted_result}")
-            print(f"[DEBUG CREW] Looking for PRIMARY_SOURCE in result: {'[PRIMARY_SOURCE:' in formatted_result}")
-            return formatted_result
+            response = self.agent_llm.call([
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ])
+            
+            llm_time = time.time() - llm_start
+            print(f"[PROFILE] Direct LLM call took {llm_time:.2f} seconds")
+            
+            # Extract response
+            if hasattr(response, 'content'):
+                result = response.content.strip()
+            else:
+                result = str(response).strip()
+            
+            return result
             
         except Exception as e:
             print(f"[DEBUG CREW] Exception in chat: {e}")
