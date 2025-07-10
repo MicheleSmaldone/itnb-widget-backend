@@ -5,6 +5,7 @@ from typing import List
 
 import os
 import logging
+import yaml
 from dotenv import load_dotenv
 from tools.groundx_tool import GroundXTool
 import json
@@ -12,7 +13,6 @@ import re
 import time
 
 # Remove Google Translate dependency - using LLM for translation instead
-print("[DEBUG CREW] Using LLM-based translation with infer-granite33-8b")
 
 # Configure logging
 # logger = logging.get# logger(__name__)
@@ -68,13 +68,56 @@ class SnlPoc():
         self._groundx_cache = {}
         # Translation cache to avoid repeated translations
         self._translation_cache = {}
-        print(f"[DEBUG CREW] Initialized LLMs - Agent: {model_name}, Translation: infer-granite33-8b")
+        
+        # Load task configurations for config-driven prompts
+        self._task_configs = self._load_task_configs()
+        
+        print(f"[DEBUG CREW] Initialized LLMs - Agent: {model_name}, Translation: {model_name_translation}")
+
+    def _load_task_configs(self) -> dict:
+        """Load task configurations from tasks.yaml"""
+        try:
+            config_path = os.path.join(os.path.dirname(__file__), "config", "tasks.yaml")
+            with open(config_path, 'r', encoding='utf-8') as f:
+                configs = yaml.safe_load(f)
+            print(f"[DEBUG CREW] Loaded {len(configs)} task configurations")
+            return configs
+        except Exception as e:
+            print(f"[ERROR] Failed to load task configs: {e}")
+            return {}
+
+    def _get_system_prompt_from_config(self, query_type: str) -> str:
+        """Get system prompt from task configuration"""
+        task_key = f"{query_type}_chat_task"
+        
+        # Special handling for website queries (uses website_chat_task)
+        if query_type == 'website':
+            task_key = "website_chat_task"
+        
+        if task_key not in self._task_configs:
+            print(f"[WARN] No config found for {task_key}, using fallback")
+            return "You are a helpful assistant. Answer based on the provided context."
+        
+        task_config = self._task_configs[task_key]
+        description = task_config.get('description', '')
+        
+        # Convert YAML description to system prompt
+        system_prompt = f"""You are a specialized assistant.
+
+{description}
+
+Remember to always:
+- Use ONLY the information provided in the GroundX context
+- Answer in the same language as the user's question
+- Be precise and follow the formatting guidelines exactly"""
+        
+        return system_prompt
 
     def _translate_and_classify(self, text: str) -> tuple[str, str]:
         """
         Translate text to English and classify query type.
         Returns: (translated_text, query_type)
-        query_type: 'website' or 'thesis'
+        query_type: 'website', 'thesis', 'books', 'posters'
         """
         if not text or not text.strip():
             return text, 'website'
@@ -86,19 +129,23 @@ class SnlPoc():
             return self._translation_cache[cache_key]
         
         try:
-            # Enhanced prompt for translation AND classification
+            # Enhanced prompt for translation AND 4-way classification
             classification_prompt = f"""You have two tasks:
 
 1. TRANSLATE: Translate the following text to English. If already in English, return unchanged.
-2. CLASSIFY: Determine if this is a question about:
-   - 'website': Swiss National Library website information, general queries, procedures
-   - 'thesis': Discussion about a specific thesis document, analyzing thesis content
+2. CLASSIFY: Determine the query type based on content and intent.
+
+CLASSIFICATION RULES:
+- 'thesis': Academic questions about research papers, dissertations, thesis documents, academic analysis (keywords: thesis/dissertation/research/study/analysis/academic/chapter)
+- 'books': Questions about finding books, literature, novels, authors, book collections (keywords: book/author/literature/novel/publication/find books)
+- 'posters': Questions about exhibition posters, art exhibitions, gallery displays, museum shows (keywords: poster/exhibition/expo/gallery/museum/display/show)
+- 'website': General library information, services, procedures, opening hours, access policies (keywords: library/service/access/procedure/policy/hours/register)
 
 Text: {text}
 
 Respond in this exact format:
 TRANSLATION: [translated text]
-TYPE: [website/thesis]"""
+TYPE: [website/thesis/books/posters]"""
             
             print(f"[DEBUG CREW] Sending translation+classification request for: '{text[:50]}...'")
             
@@ -120,7 +167,7 @@ TYPE: [website/thesis]"""
                     translated_text = line.replace('TRANSLATION:', '').strip()
                 elif line.startswith('TYPE:'):
                     type_value = line.replace('TYPE:', '').strip().lower()
-                    if type_value in ['website', 'thesis']:
+                    if type_value in ['website', 'thesis', 'books', 'posters']:
                         query_type = type_value
             
             print(f"[DEBUG CREW] Classification result: '{translated_text[:50]}...' -> {query_type}")
@@ -166,11 +213,51 @@ TYPE: [website/thesis]"""
             output_file="conversation_output.md"
         )
 
+    @task
+    def books_chat_task(self) -> Task:
+        """Chat task for book search and information"""
+        return Task(
+            config=self.tasks_config['books_chat_task'],
+            agent=self.books_agent(),
+            output_file="conversation_output.md"
+        )
+
+    @task
+    def posters_chat_task(self) -> Task:
+        """Chat task for poster and exhibition information"""
+        return Task(
+            config=self.tasks_config['posters_chat_task'],
+            agent=self.posters_agent(),
+            output_file="conversation_output.md"
+        )
+
     @agent
     def thesis_agent(self) -> Agent:
         """Agent specialized for thesis discussion"""
         return Agent(
             config=self.agents_config['thesis_agent'],
+            verbose=True,
+            allow_delegation=False,
+            llm=self.agent_llm,
+            tools=[]
+        )
+
+    @agent
+    def books_agent(self) -> Agent:
+        """Agent specialized for book search and information"""
+        return Agent(
+            config=self.agents_config['books_agent'],
+            verbose=True,
+            allow_delegation=False,
+            llm=self.agent_llm,
+            tools=[]
+        )
+
+    @agent
+    def posters_agent(self) -> Agent:
+        """Agent specialized for poster and exhibition information"""
+        return Agent(
+            config=self.agents_config['posters_agent'],
             verbose=True,
             allow_delegation=False,
             llm=self.agent_llm,
@@ -224,35 +311,17 @@ TYPE: [website/thesis]"""
                 groundx_results = "There is no available information for me to assist you."
             
             # Create unified prompt based on query type
-            if query_type == 'thesis':
-                system_prompt = """You are an Academic Thesis Discussion Assistant. 
-
-Rules:
-- Answer in the SAME language as the user's question
-- Use ONLY information from the provided GroundX context
-- Keep response concise: 75-150 words
-- Quote directly: "According to the thesis: '[exact text]'"
-- End with "REFERENCE:" followed by quoted excerpts
-- Do NOT use information from memory"""
-            else:
-                system_prompt = """You are a Swiss National Library Assistant.
-
-Rules:
-- Answer in the SAME language as the user's question  
-- Use ONLY information from the provided GroundX context
-- Keep response concise: 50-100 words
-- Include ALL [PRIMARY_SOURCE: URL] markers exactly as given
-- Do NOT add or modify any citations"""
+            system_prompt = self._get_system_prompt_from_config(query_type)
             
             # Create the unified prompt
             user_prompt = f"""Question: {query}
 
-History: {history if history else "None"}
+                            History: {history if history else "None"}
 
-GroundX Context:
-{groundx_results}
+                            GroundX Context:
+                            {groundx_results}
 
-Answer:"""
+                            Answer:"""
             
             # Direct LLM call (skip CrewAI overhead)
             print(f"[DEBUG CREW] Making direct LLM call for {query_type} mode")

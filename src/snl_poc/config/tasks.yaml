@@ -2,18 +2,18 @@ chat_task:
   # 🟢 What the agent must do
   description: >
     • You are playing the *assistant* role.  
-    • Answer the user’s question (“{user_message}”) **in the same language** the
+    • Answer the user's question ("{user_message}") in the same language the
       question was asked.  
-    • Base your reply **only** on the supplied knowledge-base snippets
-      (“{groundx_context}”). If nothing relevant is found, state this plainly.  
-    • Keep the answer concise: **50–100 words**.  
-    • Every URL already appears as **[PRIMARY_SOURCE: URL]** inside the context.
-      **Include *all* of those markers verbatim** in your answer, in any order
+    • Base your reply only on the supplied knowledge-base snippets
+      ("{groundx_context}"). If nothing relevant is found, state this plainly.  
+    • Keep the answer concise: 50–100 words.  
+    • Every URL already appears as [PRIMARY_SOURCE: URL] inside the context.
+      Include *all* of those markers verbatim in your answer, in any order
       that reads naturally. *Never* invent or re-format them.
 
   # 🟢 What a good response looks like
   expected_output: >
-    • A clear, helpful, 50-100-word answer, written in the user’s language.  
+    • A clear, helpful, 50-100-word answer, written in the user's language.  
     • Contains every [PRIMARY_SOURCE: URL] marker exactly as seen in the context.  
     • No other citations, no extra commentary.
 
@@ -23,14 +23,14 @@ chat_task:
 website_chat_task:
   description: >
     • You are playing the *assistant* role for Swiss National Library website queries.  
-    • Answer the user's question ("{user_message}") **in the same language** the
+    • Answer the user's question ("{user_message}") in the same language the
       question was asked.  
-    • Base your reply **only** on the supplied knowledge-base snippets
+    • Base your reply only on the supplied knowledge-base snippets
       ("{groundx_context}"). If nothing relevant is found, state this plainly.  
     • Consider the conversation history ("{history}") for context but focus on the current question.
-    • Keep the answer concise: **50–100 words**.  
-    • Every URL already appears as **[PRIMARY_SOURCE: URL]** inside the context.
-      **Include *all* of those markers verbatim** in your answer, in any order
+    • Keep the answer concise: 50–100 words.  
+    • Every URL already appears as [PRIMARY_SOURCE: URL] inside the context.
+      Include *all* of those markers verbatim in your answer, in any order
       that reads naturally. *Never* invent or re-format them.
 
   expected_output: >
@@ -43,21 +43,57 @@ website_chat_task:
 thesis_chat_task:
   description: >
     • You are playing the *assistant* role for thesis discussion and analysis.
-    • Answer the user's question ("{user_message}") **in the same language** the
+    • Answer the user's question ("{user_message}") in the same language the
       question was asked.
     • Use ONLY the thesis content from GroundX chunks ("{groundx_context}").
     • Consider the conversation history ("{history}") for context but focus on the current question.
-    • Keep responses concise: **75-150 words**.
+    • Keep responses concise: 75-150 words.
     • Quote directly from chunks: "According to the thesis: '[exact text from groundx_context]'"
     • Do NOT quote from memory - only use text that appears in the groundx_context.
     • If no relevant chunks found, state this clearly.
-    • **END with a brief "REFERENCE:" section showing only the key excerpts you quoted from.**
+    • END with a brief "REFERENCE:" section showing only the key excerpts you quoted from.
 
   expected_output: >
     • A concise, focused response (75-150 words) in the user's language.
     • Uses direct quotes from the groundx_context chunks.
     • References specific text as: "According to the thesis: '[quoted text]'"
     • Maintains academic tone while being brief and precise.
-    • **ENDS with: "REFERENCE:" followed by only the specific excerpts that were quoted in the response.**
+    • ENDS with: "REFERENCE:" followed by only the specific excerpts that were quoted in the response.
 
   agent: thesis_agent
+
+books_chat_task:
+  description: >
+    • You are playing the *assistant* role for book search and information.
+    • Answer the user's question ("{user_message}") in the same language the
+      question was asked.
+    • Use ONLY the book catalog data from GroundX ("{groundx_context}").
+    • Consider the conversation history ("{history}") for context but focus on the current question.
+    • Keep responses concise: 75-150 words.
+    • For book results, include the permalink as [PRIMARY_SOURCE: URL] exactly as found in the catalog data.
+    • Format book information clearly with title, author, and publication details.
+    
+  expected_output: >
+    • A clear, helpful, 75-150-word answer about books, written in the user's language.
+    • Contains [PRIMARY_SOURCE: URL] markers for each book mentioned.
+    • Provides book titles, authors, and relevant catalog information.
+
+posters_chat_task:
+  description: >
+    • You are playing the *assistant* role for poster and exhibition information.
+    • Answer the user's question ("{user_message}") in the same language the
+      question was asked.
+    • Use ONLY the poster collection data from GroundX ("{groundx_context}").
+    • Consider the conversation history ("{history}") for context but focus on the current question.
+    • Keep responses concise: 75-150 words.
+    • For each poster mentioned, include BOTH link formats exactly as shown:
+      - [PRIMARY_SOURCE: https://exact-url-here] (use the detail_url field)
+      - [POSTER_IMAGE: https://exact-image-url-here] (use the thumbnail field)
+    • DO NOT use markdown link format like [text](url). Use only the bracket format shown above.
+    
+  expected_output: >
+    • A clear, helpful, 75-150-word answer about posters, written in the user's language.
+    • Contains [PRIMARY_SOURCE: https://exact-url] and [POSTER_IMAGE: https://exact-url] markers exactly as shown.
+    • NO markdown links like [text](url) - only bracket format.
+    • Provides poster titles, exhibition information, dates, and locations.
+
