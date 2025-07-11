@@ -7,7 +7,7 @@ import os
 import logging
 import yaml
 from dotenv import load_dotenv
-from tools.groundx_tool import GroundXTool
+from src.snl_poc.tools.groundx_tool import GroundXTool
 import json
 import re
 import time
