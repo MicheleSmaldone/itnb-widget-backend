@@ -59,4 +59,6 @@ ENV PYTHONPATH=/app
 # Custom LLM environment variables will be provided at runtime through env file
 
 # Run the application
-CMD ["python", "/app/src/snl_poc/main.py"]
+#CMD ["python", "/app/src/snl_poc/main.py"]
+
+CMD ["uvicorn", "src.snl_poc.api:app", "--host", "0.0.0.0", "--port", "8000"]

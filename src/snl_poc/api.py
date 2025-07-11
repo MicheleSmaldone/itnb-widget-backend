@@ -26,7 +26,7 @@ app.add_middleware(
         "http://localhost:3000", 
         "http://localhost:3001",
         "https://*.vercel.app",
-        "https://your-frontend-app.vercel.app"  # Replace with your actual Vercel URL
+        "https://itnb-ui-kq2han5kd-michelesmaldones-projects.vercel.app/" 
     ],
     allow_credentials=True,
     allow_methods=["*"],
