@@ -86,8 +86,8 @@ class SnlPoc():
             print(f"[ERROR] Failed to load task configs: {e}")
             return {}
 
-    def _get_system_prompt_from_config(self, query_type: str) -> str:
-        """Get system prompt from task configuration"""
+    def _get_system_prompt_from_config(self, query_type: str, current_query_language: str = None) -> str:
+        """Get system prompt from task configuration with explicit language override"""
         task_key = f"{query_type}_chat_task"
         
         # Special handling for website queries (uses website_chat_task)
@@ -101,14 +101,27 @@ class SnlPoc():
         task_config = self._task_configs[task_key]
         description = task_config.get('description', '')
         
+        # Add explicit language override if provided
+        language_override = ""
+        if current_query_language:
+            language_override = f"""
+CRITICAL LANGUAGE RULE: 
+- The user's CURRENT question is in {current_query_language}
+- You MUST respond ONLY in {current_query_language}
+- IGNORE any other languages in the conversation history
+- Base your language ONLY on the current user question, not the history
+"""
+        
         # Convert YAML description to system prompt
-        system_prompt = f"""You are a specialized assistant.
+        system_prompt = f"""{language_override}
+
+You are a specialized assistant.
 
 {description}
 
 Remember to always:
 - Use ONLY the information provided in the GroundX context
-- Answer in the same language as the user's question
+- Answer in the same language as the user's CURRENT question (ignore history language)
 - Be precise and follow the formatting guidelines exactly"""
         
         return system_prompt
@@ -182,6 +195,39 @@ TYPE: [website/thesis/books/posters]"""
             result = (text, 'website')
             self._translation_cache[cache_key] = result
             return result
+
+    def _detect_query_language(self, query: str) -> str:
+        """Detect the language of the current query only"""
+        try:
+            # Simple language detection prompt
+            detection_prompt = f"""Detect the language of this text and respond with only the language name in English:
+
+Text: "{query}"
+
+Language:"""
+            
+            response = self.translation_llm.call([{"role": "user", "content": detection_prompt}])
+            
+            if hasattr(response, 'content'):
+                language = response.content.strip().lower()
+            else:
+                language = str(response).strip().lower()
+            
+            # Normalize common language names
+            if 'english' in language or 'en' == language:
+                return 'English'
+            elif 'french' in language or 'français' in language or 'fr' == language:
+                return 'French'
+            elif 'german' in language or 'deutsch' in language or 'de' == language:
+                return 'German'
+            elif 'italian' in language or 'italiano' in language or 'it' == language:
+                return 'Italian'
+            else:
+                return language.title()
+                
+        except Exception as e:
+            print(f"[DEBUG CREW] Language detection failed: {e}")
+            return 'English'  # fallback
 
     @agent
     def rag_agent(self) -> Agent:
@@ -298,6 +344,10 @@ TYPE: [website/thesis/books/posters]"""
             translated_query, query_type = self._translate_and_classify(query)
             print(f"[DEBUG CREW] Query classified as: {query_type}")
             
+            # Detect the current query language
+            current_query_language = self._detect_query_language(query)
+            print(f"[DEBUG CREW] Current query language detected: {current_query_language}")
+            
             # Get GroundX results (cached)
             cache_key = translated_query.strip().lower()
             if cache_key in self._groundx_cache:
@@ -311,7 +361,7 @@ TYPE: [website/thesis/books/posters]"""
                 groundx_results = "There is no available information for me to assist you."
             
             # Create unified prompt based on query type
-            system_prompt = self._get_system_prompt_from_config(query_type)
+            system_prompt = self._get_system_prompt_from_config(query_type, current_query_language)
             
             # Create the unified prompt
             user_prompt = f"""Question: {query}
