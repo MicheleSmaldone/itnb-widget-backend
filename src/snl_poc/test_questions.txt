@@ -1,0 +1,61 @@
+What are the reading-rooms opening hours on Saturdays?
+Is the Library open on public holidays?
+Is there an entrance fee to use the Library?
+Is there wi-fi at the Library?
+Is there a cafeteria open to the public?
+How do I phone the Legal Deposit office?
+What's the postal address of the Swiss National Library?
+Where is the Swiss National Library located?
+How can I request a book from storage?
+What are the fees for interlibrary loan?
+Can I print, scan, or photocopy documents at the Library?
+Can someone help me with my research at the Library?
+Does the Library offer online access to its collections?
+Can I download or view documents online?
+Can I borrow books or are they for on-site use only?
+Where do I search the Helveticat catalogue?
+Which page lists digitised newspapers?
+Where can I find digital dissertations and theses from Swiss universities?
+Where can I find digital publications from Swiss publishers?
+Where can I find archived Swiss websites?
+Where can I find information about events for professionals related to e-Helvetica?
+Show me PhD theses about renewable energy in Switzerland.
+List theses written by students from ETH Zurich between 2015–2020.
+Which theses were supervised by Prof. Müller?
+Find theses related to deep learning in medical imaging.
+Are there any recent theses on blockchain from 2023?
+Give me the title and author of this thesis.
+List all French-language PhD theses on tomatoes from University of Geneva.
+Summarize this thesis in 200 words.
+What is the main conclusion of this research?
+What methodology did the author use for data collection?
+What were the results of Experiment 2?
+Explain what "quantum entanglement" means in this context.
+Which studies does the thesis cite for its theoretical framework?
+Rewrite the abstract in simpler language.
+Translate the abstract to English.
+Which posters were designed by Werner Jeker?
+Who created this poster?
+Show all works by designers born in 1944.
+Posters designed by Werner Jeker AND printed in 2025.
+Culture-themed posters from Lausanne, published after 2010.
+Which posters were printed by Uldry AG in Hinterkappelen?
+List the contributors involved in this poster.
+Which museum commissioned this poster?
+Show posters commissioned by the Musée Historique Lausanne.
+Find all posters published in 2025.
+Show posters issued between 2020 and 2025.
+What are the exhibition dates shown on this poster?
+List posters advertising exhibitions in Lausanne.
+Find posters tagged with "Culture" or "Graphische Kunst".
+Show ads that feature the subject "Homme" or "Auge".
+Which posters relate to Lausanne (VD)?
+Show all posters connected to Canton Vaud.
+What are the dimensions of this poster?
+Find posters measuring 128 × 90.5 cm.
+List all entries whose medium is "1 affiche" (poster).
+Is this poster available for consultation?
+Which collection holds it?
+Give me the call-number for this item.
+Provide the permalink (URI) for this poster.
+Where can I view its catalogue record online?
