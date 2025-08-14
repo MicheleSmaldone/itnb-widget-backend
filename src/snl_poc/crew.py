@@ -55,13 +55,13 @@ class SnlPoc():
             api_key=os.getenv("OPENAI_API_KEY"),
         )
         
-        model_name_translation = os.getenv("OPENAI_MODEL_NAME-2")
+        model_name_translation = os.getenv("OPENAI_MODEL_NAME_2") or os.getenv("OPENAI_MODEL_NAME")
 
         # Create separate LLM instance specifically for translation using granite
         self.translation_llm = LLM(
             model=model_name_translation,
-            base_url=os.getenv("OPENAI_API_BASE-2"),
-            api_key=os.getenv("OPENAI_API_KEY-2"),
+            base_url=os.getenv("OPENAI_API_BASE_2") or os.getenv("OPENAI_API_BASE"),
+            api_key=os.getenv("OPENAI_API_KEY_2") or os.getenv("OPENAI_API_KEY"),
         )
         
         # Simple cache to prevent duplicate GroundX calls
