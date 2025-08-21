@@ -1,0 +1,9 @@
+chat_task:
+  description: >
+    Answer "{user_message}" in SAME LANGUAGE using snippets "{groundx_context}".
+    Use 30-50 words. Include ALL [PRIMARY_SOURCE: URL] markers from context.
+    
+  expected_output: >
+    Concise 30-50 word answer with source citations.
+    
+  agent: rag_agent

@@ -19,7 +19,7 @@ import time
 load_dotenv()
 
 # Initialize GroundX tool with configurable max chunks for Phoenix bucket
-max_chunks = int(os.getenv("GROUNDX_MAX_CHUNKS", "5"))  # Get from env var or default to 5
+max_chunks = int(os.getenv("GROUNDX_MAX_CHUNKS", "2"))  # Get from env var or default to 5
 groundx_tool = GroundXTool(bucket_name="phoenix", max_chunks=max_chunks)  # Use Phoenix bucket
 # logger.info("Initialized GroundXTool")
 
