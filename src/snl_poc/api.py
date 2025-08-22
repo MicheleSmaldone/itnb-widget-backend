@@ -13,7 +13,7 @@ for noisy_logger in [
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from src.snl_poc.crew import SnlPoc
+from src.snl_poc.crew_phoenix import SnlPoc
 from fastapi.responses import JSONResponse
 import traceback
 

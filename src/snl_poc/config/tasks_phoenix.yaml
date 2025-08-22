@@ -7,6 +7,10 @@ chat_task:
     • Base your reply only on the supplied knowledge-base snippets ("{groundx_context}"). 
     • If nothing relevant is found, state this plainly.  
     • Keep the answer concise: 50–100 words.  
+    • **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
+      image URLs in format "image": {"url": "https://...", "type": "external_url"}, 
+      include the image at the END of your response (before sources) as: [IMAGE: URL]
+      Only include images for the specific team members mentioned.
     • Every URL already appears as [PRIMARY_SOURCE: URL] inside the context.
       Include *all* of those markers verbatim in your answer, in any order
       that reads naturally. *Never* invent or re-format them.
@@ -14,6 +18,7 @@ chat_task:
   # 🟢 What a good response looks like
   expected_output: >
     • A clear, helpful, 50-100-word answer, written in the EXACT SAME LANGUAGE as the user's question.  
+    • When discussing team members, includes [IMAGE: URL] at the end before sources.
     • Contains every [PRIMARY_SOURCE: URL] marker exactly as seen in the context.  
     • No other citations, no extra commentary.
 
@@ -29,6 +34,10 @@ website_chat_task:
     • If nothing relevant is found, state this plainly.  
     • Consider the conversation history ("{history}") for context but focus on the current question.
     • Keep the answer concise: 50–100 words.  
+    • **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
+      image URLs in format "image": {"url": "https://...", "type": "external_url"}, 
+      include the image at the END of your response (before sources) as: [IMAGE: URL]
+      Only include images for the specific team members mentioned.
     • Every URL already appears as [PRIMARY_SOURCE: URL] inside the context.
       Include *all* of those markers verbatim in your answer, in any order
       that reads naturally. *Never* invent or re-format them.
@@ -44,6 +53,7 @@ website_chat_task:
 
   expected_output: >
     • A clear, helpful, 50-100-word answer, written in the EXACT SAME LANGUAGE as the user's question.  
+    • When discussing team members, includes [IMAGE: URL] at the end before sources.
     • Contains every [PRIMARY_SOURCE: URL] marker exactly as seen in the context.  
     • No other citations, no extra commentary.
     • Focuses on Phoenix Technologies' AI, cloud, and cybersecurity solutions.

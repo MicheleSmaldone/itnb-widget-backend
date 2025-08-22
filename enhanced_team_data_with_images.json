@@ -1,0 +1,244 @@
+{
+  "url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/team",
+  "title": "Management Team | Phoenix Technologies",
+  "meta_description": "Our experienced management team brings together diverse backgrounds, deep expertise, and a proven track record of success. United by a shared vision, they drive Phoenix Technologies forward with innovation, leadership, and dedication.",
+  "team_members": [
+    {
+      "name": "Thomas Taroni",
+      "title": "Group CEO Phoenix Technologies",
+      "description": "Thomas Taroni, the Executive Chairman and co-founder of Phoenix Technologies, has been a driving force in the IT hardware and software industry.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Thomas_Taroni_bebd2755b6.png?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Thomas Taroni",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Thomas Taroni"
+      }
+    },
+    {
+      "name": "Carla Bünger",
+      "title": "Vice President of the Board and Founder",
+      "description": "Carla Bünger, co-founder and Vice-Chairwoman of Phoenix Technologies, is recognized as one of Switzerland's Digital Shapers.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Profilepicture_Carla_Buenger_Phoenix_Technologies_1_cbbb43ba59.jpeg?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Carla Bünger",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Carla Bünger"
+      }
+    },
+    {
+      "name": "Angel Nunez Mencias",
+      "title": "Board Member and CEO",
+      "description": "Angel Nunez Mencias is the Group's Chief Technical/Client Officer (CTO/CCO) of Phoenix Technologies AG.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Angel_Web_1_95b56c3b12.png?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Angel Nunez Mencias",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Angel Nunez Mencias"
+      }
+    },
+    {
+      "name": "Stefan Taroni",
+      "title": "Chief Operating Officer",
+      "description": "Stefan Taroni serves as Chief Operating Officer at Phoenix Technologies.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Stefan_Taroni_63cb7047a0.png?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Stefan Taroni",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Stefan Taroni"
+      }
+    },
+    {
+      "name": "Maddalena Schmid",
+      "title": "Chief Human Resources Officer",
+      "description": "Maddalena Schmid serves as Chief Human Resources Officer at Phoenix Technologies.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/maddalena_schmid_1024x1024_1a63afd978.jpg?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Maddalena Schmid",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Maddalena Schmid"
+      }
+    },
+    {
+      "name": "Nicolai Brignoli",
+      "title": "Chief Revenue Officer",
+      "description": "Nicolai Brignoli serves as Chief Revenue Officer at Phoenix Technologies.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Brignoli_Nicola_ITNB_2024_new_de7c6edc63.jpg?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Nicolai Brignoli",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Nicolai Brignoli"
+      }
+    },
+    {
+      "name": "Reto Oeschger",
+      "title": "Chief Financial Officer",
+      "description": "Reto Oeschger serves as Chief Financial Officer at Phoenix Technologies.",
+      "image": {
+        "url": "https://phoenix-technologies.ch/img/Reto_Oeaschger_ce2df011e3.png?q=eyJyZXNpemUiOnsidyI6Mzg0MCwiZmlsbCI6ImNvdmVyIn19",
+        "alt": "Profile picture of Reto Oeschger",
+        "type": "external_url"
+      },
+      "contact": {
+        "email": "contact@phoenix-technologies.ch?subject=ATTN: Reto Oeschger"
+      }
+    }
+  ],
+  "extraction_method": "enhanced_with_images",
+  "image_handling_approach": "direct_urls"
+}
+
+// old version
+
+
+{
+  "url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/team",
+  "title": "Management Team | Phoenix Technologies",
+  "meta_description": "Our experienced management team brings together diverse backgrounds, deep expertise, and a proven track record of success. United by a shared vision, they drive Phoenix Technologies forward with innovation, leadership, and dedication.",
+  "headings": [
+    {
+      "level": "h2",
+      "text": "Phoenix Technologies Team"
+    },
+    {
+      "level": "h2",
+      "text": "Why Phoenix"
+    },
+    {
+      "level": "h2",
+      "text": "Management Team"
+    },
+    {
+      "level": "h2",
+      "text": "Full Team"
+    },
+    {
+      "level": "h2",
+      "text": "We Make AI Work For You"
+    },
+    {
+      "level": "h3",
+      "text": "Products and Services"
+    },
+    {
+      "level": "h3",
+      "text": "Infrastructure as a Service"
+    },
+    {
+      "level": "h3",
+      "text": "Platform as a Service"
+    },
+    {
+      "level": "h3",
+      "text": "Software as a Service"
+    },
+    {
+      "level": "h3",
+      "text": "Professional Services"
+    },
+    {
+      "level": "h3",
+      "text": "Cybersecurity"
+    },
+    {
+      "level": "h3",
+      "text": "Solutions"
+    },
+    {
+      "level": "h3",
+      "text": "Industries"
+    },
+    {
+      "level": "h3",
+      "text": "Use Cases"
+    },
+    {
+      "level": "h3",
+      "text": "Ecosystem"
+    },
+    {
+      "level": "h3",
+      "text": "Company"
+    }
+  ],
+  "main_content": "Phoenix Technologies Team Our experienced management team brings together diverse backgrounds, deep expertise, and a proven track record of success. United by a shared vision, they drive Phoenix Technologies forward with innovation, leadership, and dedication. Why Phoenix We aim to establish the Sovereign Cloud driving digital transformation, catalyzing innovation, and fortifying resilience for Switzerland’s organizations over the next generations. Join the Team Download  (undefined, 0 B) Management Team Thomas Taroni Group CEO Phoenix Technologies Send email Open linkedin profile Carla Bünger Vice President of the Board and Founder Send email Angel Nunez Mencias Board Member and CEO Send email Stefan Taroni Chief Operating Officer Send email Maddalena Schmid Chief Human Resources Officer Send email Nicolai Brignoli Chief Revenue Officer Send email Reto Oeschger Chief Financial Officer Send email Full Team At the heart of Phoenix Technologies is our dedicated team — a diverse group of engineers, creators, and innovators united by a shared mission: building secure, sovereign, and future-ready cloud and AI solutions from Switzerland. Their expertise, passion, and relentless drive power everything we do. You have questions for the team? Do not hesitate to contact us. Contact Us Download  (undefined, 0 B) Phoenix Technologies Team Our experienced management team brings together diverse backgrounds, deep expertise, and a proven track record of success. United by a shared vision, they drive Phoenix Technologies forward with innovation, leadership, and dedication. Why Phoenix We aim to establish the Sovereign Cloud driving digital transformation, catalyzing innovation, and fortifying resilience for Switzerland’s organizations over the next generations. Join the Team Download  (undefined, 0 B) Thomas Taroni Group CEO Phoenix Technologies Send email Open linkedin profile Carla Bünger Vice President of the Board and Founder Send email Angel Nunez Mencias Board Member and CEO Send email Stefan Taroni Chief Operating Officer Send email Maddalena Schmid Chief Human Resources Officer Send email Nicolai Brignoli Chief Revenue Officer Send email Reto Oeschger Chief Financial Officer Send email Full Team At the heart of Phoenix Technologies is our dedicated team — a diverse group of engineers, creators, and innovators united by a shared mission: building secure, sovereign, and future-ready cloud and AI solutions from Switzerland. Their expertise, passion, and relentless drive power everything we do. You have questions for the team? Do not hesitate to contact us. Contact Us Download  (undefined, 0 B)",
+  "call_to_actions": [
+    {
+      "text": "Contact",
+      "href": "/en/company/about-phoenix-technologies/contact",
+      "full_url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/contact"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Thomas Taroni",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Thomas Taroni"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Carla Bünger",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Carla Bünger"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Angel Nunez Mencias",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Angel Nunez Mencias"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Stefan Taroni",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Stefan Taroni"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Maddalena  Schmid",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Maddalena  Schmid"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Nicolai Brignoli",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Nicolai Brignoli"
+    },
+    {
+      "text": "Send email",
+      "href": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Reto Oeschger",
+      "full_url": "mailto:contact@phoenix-technologies.ch?subject=ATTN: Reto Oeschger"
+    },
+    {
+      "text": "Contact UsDownload  (undefined, 0 B)",
+      "href": "/en/company/about-phoenix-technologies/contact",
+      "full_url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/contact"
+    },
+    {
+      "text": "Contact",
+      "href": "/en/company/about-phoenix-technologies/contact",
+      "full_url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/contact"
+    },
+    {
+      "text": "Contact",
+      "href": "/en/company/about-phoenix-technologies/contact",
+      "full_url": "https://phoenix-technologies.ch/en/company/about-phoenix-technologies/contact"
+    }
+  ],
+  "contact_info": {
+    "email": "contact@phoenix-technologies.ch?subject=ATTN: Reto Oeschger"
+  },
+  "navigation": [],
+  "company_description": "Our experienced management team brings together diverse backgrounds, deep expertise, and a proven track record of success. United by a shared vision, they drive Phoenix Technologies forward with innovation, leadership, and dedication.",
+  "mission_vision": "",
+  "team_info": [],
+  "certifications": [],
+  "careers": [],
+  "contact_details": {},
+  "page_type": "company"
+}

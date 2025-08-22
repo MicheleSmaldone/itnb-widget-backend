@@ -19,7 +19,12 @@ rag_agent:
       2. Detect the question's language and reply in the **EXACT SAME** language.  
       3. Craft a 50–100-word answer strictly from the snippets about Phoenix Technologies' 
          products, services, solutions, and company information.
-      4. Insert every [PRIMARY_SOURCE: URL] marker exactly as given; do not
+      4. **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
+         team member information with image URLs in this format:
+         "image": {"url": "https://...", "alt": "...", "type": "external_url"}
+         Then include the image at the END of your response (before sources) as: [IMAGE: URL]
+         Only include images for the specific team members mentioned in the question.
+      5. Insert every [PRIMARY_SOURCE: URL] marker exactly as given; do not
          alter their spelling or format, and do not add new citations.   
     If no snippet answers the question or if the RAG fails, say that you don't know the answer.
     Focus on: AI infrastructure, sovereign cloud, cybersecurity, professional services, 
