@@ -18,14 +18,14 @@ import time
 # Load environment variables
 load_dotenv()
 
-# Initialize GroundX tool with configurable max chunks for Phoenix bucket
-max_chunks = int(os.getenv("GROUNDX_MAX_CHUNKS", "2"))  # Get from env var or default to 5
-groundx_tool = GroundXTool(bucket_name="phoenix", max_chunks=max_chunks)  # Use Phoenix bucket
+# Initialize GroundX tool with configurable max chunks for ITNB bucket
+max_chunks = int(os.getenv("GROUNDX_MAX_CHUNKS", "2"))  # Get from env var or default to 2
+groundx_tool = GroundXTool(bucket_name="itnb-website-widget", max_chunks=max_chunks)  # Use ITNB bucket
 # logger.info("Initialized GroundXTool")
 
 @CrewBase
 class SnlPoc():
-    """Phoenix Technologies crew for knowledge retrieval from company documents"""
+    """ITNB crew for knowledge retrieval from company documents"""
 
     agents_config = "config/agents_phoenix.yaml"
     tasks_config = "config/tasks_phoenix.yaml"

@@ -40,7 +40,7 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/chat_itnb", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest):
     try:
         print(f"[API DEBUG] Received message: {req.message}")
@@ -63,6 +63,6 @@ async def chat_endpoint(req: ChatRequest):
         traceback.print_exc()  # <-- Add this line
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-@app.get("/health")
+@app.get("/health_itnb")
 async def health():
     return {"status": "ok"}

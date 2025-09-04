@@ -47,12 +47,19 @@ class GroundXTool(BaseTool):
         """Initialize the GroundX tool."""
         super().__init__(**kwargs)
         
-        # Initialize GroundX client
+        # Initialize GroundX client with on-premise configuration
         api_key = os.getenv("GROUNDX_API_KEY")
+        base_url = os.getenv("GROUNDX_BASE_URL")
         if not api_key:
             raise ValueError("GROUNDX_API_KEY not found in environment variables")
         
-        self.client = GroundX(api_key=api_key)
+        # Use on-premise configuration if available
+        if base_url:
+            self.client = GroundX(api_key=api_key, base_url=base_url)
+            logger.info(f"Using on-premise GroundX at: {base_url}")
+        else:
+            self.client = GroundX(api_key=api_key)
+            logger.info("Using default GroundX API")
         self.bucket_name = bucket_name
         self.max_chunks = max_chunks
         

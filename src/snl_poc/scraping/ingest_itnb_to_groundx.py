@@ -6,8 +6,7 @@ import logging
 import json
 import time
 from pathlib import Path
-from groundx import Groundx
-from groundx.models import Document
+from groundx import GroundX, Document
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 class ITNBGroundXIngester:
     """GroundX ingester configured for ITNB website data"""
     
-    def __init__(self, api_key: str, base_url: str, bucket_name: str = "itnb-website-widget"):
+    def __init__(self, api_key: str, base_url: str, bucket_name: str = " "):
         """Initialize the ITNB GroundX ingester"""
         self.api_key = api_key
         self.base_url = base_url
@@ -24,7 +23,7 @@ class ITNBGroundXIngester:
         self.bucket_id = None
         
         # Initialize GroundX client with on-prem configuration
-        self.client = Groundx(
+        self.client = GroundX(
             api_key=api_key,
             base_url=base_url
         )
@@ -130,7 +129,7 @@ class ITNBGroundXIngester:
                 logger.error(f"Data directory not found: {self.data_dir}")
                 return documents
             
-            # Find the main ITNB content file
+            # Find the main ITNB content file (optional)
             main_content_file = self.data_dir / "itnb_all_content.json"
             
             if main_content_file.exists():
@@ -141,6 +140,8 @@ class ITNBGroundXIngester:
                     file_path=str(main_content_file),
                     file_type="json"
                 ))
+            else:
+                logger.info("Main ITNB content file not found, will use individual extracted files")
             
             # Find individual extracted files
             individual_files = list(self.data_dir.glob("*_extracted.json"))

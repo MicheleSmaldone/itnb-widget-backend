@@ -28,8 +28,14 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # Load environment variables
 load_dotenv()
 
+# Set GroundX on-premise configuration if not already set
+if not os.getenv("GROUNDX_API_KEY"):
+    os.environ["GROUNDX_API_KEY"] = "5c49be10-d228-4dd8-bbb0-d59300698ef6"
+if not os.getenv("GROUNDX_BASE_URL"):
+    os.environ["GROUNDX_BASE_URL"] = "https://groundx-service-eyelevel.apps.eyelevel.kvant.cloud/api"
+
 def run():
-    """Run the Phoenix Technologies chat loop for continuous interaction"""
+    """Run the ITNB chat loop for continuous interaction"""
     history = []
     
     # Create output directory if it doesn't exist
@@ -41,8 +47,8 @@ def run():
     session_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     session_log_file = os.path.join(output_dir, f"phoenix_session_{session_timestamp}.txt")
     
-    print("\n=== Phoenix Technologies Assistant ===")
-    print("Ask me about Phoenix Technologies' AI solutions, cloud infrastructure,")
+    print("\n=== ITNB Assistant ===")
+    print("Ask me about ITNB's AI solutions, cloud infrastructure,")
     print("cybersecurity services, and Swiss sovereign computing!")
     print("Type 'exit', 'quit', or 'bye' to end the conversation.")
     print("Type 'save' to save the current response to a file.")
@@ -60,7 +66,7 @@ def run():
         
         # Check for exit command
         if user_input.lower() in ["exit", "quit", "bye"]:
-            print("Assistant: Goodbye! Thank you for learning about Phoenix Technologies.")
+            print("Assistant: Goodbye! Thank you for learning about ITNB.")
             break
         
         # Check for save command
@@ -108,20 +114,20 @@ def run():
         print(f"\nResponse automatically saved to: {auto_save_file}")
 
 def test_phoenix():
-    """Test the Phoenix Technologies assistant with sample queries"""
-    print("\n=== Testing Phoenix Technologies Assistant ===")
+    """Test the ITNB assistant with sample queries"""
+    print("\n=== Testing ITNB Assistant ===")
     
     # Initialize crew instance
     crew_instance = SnlPoc()
     
     # Test queries
     test_queries = [
-        "What is Phoenix Technologies?",
-        "Tell me about Sovereign Cloud",
-        "What AI services do you offer?",
-        "What cybersecurity solutions does Phoenix provide?",
-        "Qu'est-ce que Phoenix Technologies?",  # French test
-        "Was ist die Sovereign Cloud?",  # German test
+        "What is ITNB?",
+        "Tell me about ITNB Sovereign Cloud",
+        "What AI services does ITNB offer?",
+        "What cybersecurity solutions does ITNB provide?",
+        "Tell me about ITNB Speedboat solution",
+        "What industries does ITNB serve?",
     ]
     
     for i, query in enumerate(test_queries, 1):

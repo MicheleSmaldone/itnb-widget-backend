@@ -17,12 +17,15 @@ from groundx import GroundX
 load_dotenv()
 
 class FastPhoenixChatbot:
-    """Ultra-optimized Phoenix Technologies chatbot."""
+    """Ultra-optimized ITNB chatbot."""
     
     def __init__(self):
-        # Initialize GroundX
-        self.groundx = GroundX(api_key=os.getenv("GROUNDX_API_KEY"))
-        self.bucket_id = 20768  # Phoenix bucket
+        # Initialize GroundX with on-prem configuration
+        self.groundx = GroundX(
+            api_key=os.getenv("GROUNDX_API_KEY", "5c49be10-d228-4dd8-bbb0-d59300698ef6"),
+            base_url=os.getenv("GROUNDX_BASE_URL", "https://groundx-service-eyelevel.apps.eyelevel.kvant.cloud/api")
+        )
+        self.bucket_id = 25  # ITNB bucket
         
         # Initialize OpenAI with your existing configuration
         from crewai import LLM
@@ -34,16 +37,16 @@ class FastPhoenixChatbot:
         self.cache_ttl = 3600  # 1 hour
         
         # Optimized prompt template with few-shot examples (MANDATORY Markdown format)
-        self.prompt_template = """You are Phoenix Technologies' AI assistant. You MUST answer in 30-50 words using provided context, formatted in Markdown.
+        self.prompt_template = """You are ITNB's AI assistant. You MUST answer in 30-50 words using provided context, formatted in Markdown.
 
 CRITICAL: YOU MUST FORMAT YOUR RESPONSE IN MARKDOWN - NO PLAIN TEXT ALLOWED.
 
 EXAMPLES:
 Q: "What is Sovereign Cloud?"
-A: "**Phoenix Technologies'** *Sovereign Cloud* provides **Swiss data sovereignty** with complete control over infrastructure and data location, ensuring *compliance* with local regulations while offering enterprise-grade cloud services."
+A: "**ITNB's** *Sovereign Cloud* provides **Swiss data sovereignty** with complete control over infrastructure and data location, ensuring *compliance* with local regulations while offering enterprise-grade cloud services."
 
 Q: "What AI services do you offer?"  
-A: "**Phoenix Technologies** offers:
+A: "**ITNB** offers:
 * **AI Model as a Service**
 * AI infrastructure hosting  
 * AI workload optimization on **sovereign Swiss infrastructure**
