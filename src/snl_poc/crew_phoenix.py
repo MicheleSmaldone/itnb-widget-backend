@@ -27,8 +27,8 @@ groundx_tool = GroundXTool(bucket_name="itnb-website-widget", max_chunks=max_chu
 class SnlPoc():
     """ITNB crew for knowledge retrieval from company documents"""
 
-    agents_config = "config/agents_phoenix.yaml"
-    tasks_config = "config/tasks_phoenix.yaml"
+    agents_config = "config/agents_itnb.yaml"
+    tasks_config = "config/tasks_itnb.yaml"
     
     agents: List[BaseAgent]
     tasks: List[Task]
