@@ -40,6 +40,7 @@ class GroundXTool(BaseTool):
     def __init__(
         self,
         bucket_name: str = "itnb",
+        bucket_id: Optional[int] = None,
         knowledge_dir: Optional[str] = None,
         max_chunks: int = 4,
         **kwargs
@@ -70,8 +71,14 @@ class GroundXTool(BaseTool):
         )
         logger.info(f"Knowledge directory: {self._knowledge_dir}")
         
-        # Setup bucket and store ID using improved logic
-        self._bucket_id = self._setup_bucket_improved()
+        # Setup bucket and store ID
+        if bucket_id:
+            # Use directly provided bucket_id
+            self._bucket_id = bucket_id
+            logger.info(f"Using directly specified bucket ID: {bucket_id}")
+        else:
+            # Use bucket name lookup (existing behavior)
+            self._bucket_id = self._setup_bucket_improved()
         
         # Get existing documents
         self._get_existing_documents()
