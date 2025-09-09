@@ -67,9 +67,9 @@ class SnlPoc():
         print(f"[DEBUG CREW] Initialized Phoenix Technologies LLMs - Agent: {model_name}, Translation: {model_name_translation}")
 
     def _load_task_configs(self) -> dict:
-        """Load task configurations from tasks_phoenix.yaml"""
+        """Load task configurations from tasks_itnb.yaml"""
         try:
-            config_path = os.path.join(os.path.dirname(__file__), "config", "tasks_phoenix.yaml")
+            config_path = os.path.join(os.path.dirname(__file__), "config", "tasks_itnb.yaml")
             with open(config_path, 'r', encoding='utf-8') as f:
                 configs = yaml.safe_load(f)
             print(f"[DEBUG CREW] Loaded {len(configs)} Phoenix Technologies task configurations")

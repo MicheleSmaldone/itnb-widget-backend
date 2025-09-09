@@ -70,11 +70,79 @@ class GroundXTool(BaseTool):
         )
         logger.info(f"Knowledge directory: {self._knowledge_dir}")
         
-        # Setup bucket and store ID
-        self._bucket_id = self._setup_bucket()
+        # Setup bucket and store ID using improved logic
+        self._bucket_id = self._setup_bucket_improved()
         
         # Get existing documents
         self._get_existing_documents()
+        
+        # Print bucket status for debugging
+        self._print_bucket_status()
+    
+    def _setup_bucket_improved(self) -> Optional[int]:
+        """Find the bucket with the most documents using improved logic."""
+        try:
+            logger.info(f"Setting up bucket '{self.bucket_name}' using improved discovery...")
+            
+            # List all buckets
+            buckets_response = self.client.buckets.list()
+            
+            if not hasattr(buckets_response, 'buckets') or not buckets_response.buckets:
+                logger.warning("No buckets found in the system")
+                return None
+            
+            # Get all documents
+            documents_response = self.client.documents.list()
+            
+            # Find buckets with matching name and count documents
+            matching_buckets = []
+            for bucket in buckets_response.buckets:
+                if bucket.name == self.bucket_name:
+                    doc_count = 0
+                    if hasattr(documents_response, 'documents') and documents_response.documents:
+                        doc_count = len([doc for doc in documents_response.documents if doc.bucket_id == bucket.bucket_id])
+                    
+                    matching_buckets.append({
+                        'id': bucket.bucket_id,
+                        'name': bucket.name,
+                        'doc_count': doc_count
+                    })
+            
+            if not matching_buckets:
+                logger.warning(f"No buckets found with name '{self.bucket_name}'")
+                return None
+            
+            # Use the bucket with the most documents
+            active_bucket = max(matching_buckets, key=lambda b: b['doc_count'])
+            
+            logger.info(f"Selected bucket '{self.bucket_name}' (ID: {active_bucket['id']}) with {active_bucket['doc_count']} documents")
+            return active_bucket['id']
+            
+        except Exception as e:
+            logger.error(f"Error in improved bucket setup: {str(e)}")
+            return None
+    
+    def _print_bucket_status(self) -> None:
+        """Print bucket status information"""
+        try:
+            if not self._bucket_id:
+                print("❌ No active bucket found")
+                return
+            
+            # Get documents in this bucket
+            documents_response = self.client.documents.list()
+            bucket_docs = []
+            
+            if hasattr(documents_response, 'documents') and documents_response.documents:
+                bucket_docs = [doc for doc in documents_response.documents if doc.bucket_id == self._bucket_id]
+            
+            print("=" * 50)
+            print(f"📦 GroundX Bucket: {self.bucket_name} (ID: {self._bucket_id})")
+            print(f"📁 Documents: {len(bucket_docs)}")
+            print("=" * 50)
+            
+        except Exception as e:
+            print(f"❌ Error getting bucket status: {str(e)}")
     
     def _setup_bucket(self) -> int:
         """Create a new bucket or get existing bucket ID."""

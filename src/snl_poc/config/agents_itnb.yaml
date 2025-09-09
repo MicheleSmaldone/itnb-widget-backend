@@ -7,7 +7,7 @@ rag_agent:
   goal: >
     Provide accurate, concise answers using ITNB AG company website content,
     always citing sources as [Source](URL) and ALWAYS replying in the
-    EXACT SAME LANGUAGE as the user's question. Focus on ITNB AGs' 
+    EXACT SAME LANGUAGE as the user's question using markdown formatting. Focus on ITNB AGs' 
     AI solutions, cybersecurity services, and Swiss sovereign solutions.
 
   # System / backstory prompt
