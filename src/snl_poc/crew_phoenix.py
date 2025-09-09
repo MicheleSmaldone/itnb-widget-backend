@@ -20,7 +20,7 @@ load_dotenv()
 
 # Initialize GroundX tool with configurable max chunks for ITNB bucket
 max_chunks = int(os.getenv("GROUNDX_MAX_CHUNKS", "2"))  # Get from env var or default to 2
-groundx_tool = GroundXTool(bucket_id=46, max_chunks=max_chunks)  # Use ITNB bucket ID 46 directly
+groundx_tool = GroundXTool(bucket_id=69, max_chunks=max_chunks)  # Use ITNB bucket ID 69 directly
 # logger.info("Initialized GroundXTool")
 
 @CrewBase

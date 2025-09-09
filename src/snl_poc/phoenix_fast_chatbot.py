@@ -25,7 +25,7 @@ class FastPhoenixChatbot:
             api_key=os.getenv("GROUNDX_API_KEY", "5c49be10-d228-4dd8-bbb0-d59300698ef6"),
             base_url=os.getenv("GROUNDX_BASE_URL", "https://groundx-service-eyelevel.apps.eyelevel.kvant.cloud/api")
         )
-        self.bucket_id = 46  # ITNB bucket
+        self.bucket_id = 69  # ITNB bucket
         
         # Initialize OpenAI with your existing configuration
         from crewai import LLM
