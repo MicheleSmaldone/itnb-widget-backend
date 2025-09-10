@@ -231,6 +231,43 @@ Language:"""
             share_crew=False  # Set to True if you want to share crew runs publicly
         )
     
+    def _trim_history(self, history: str, max_turns: int = 2) -> str:
+        """Trim history to keep only the last N complete user/assistant pairs"""
+        if not history or not history.strip():
+            return ""
+        
+        # Split into lines and filter out empty ones
+        lines = [line for line in history.split('\n') if line.strip()]
+        
+        if not lines:
+            return ""
+        
+        # Parse history into complete turns (User + Assistant pairs)
+        turns = []
+        current_turn = []
+        
+        for line in lines:
+            if line.startswith("User: ") and current_turn:
+                # Start of new turn - save the previous complete turn
+                turns.append('\n'.join(current_turn))
+                current_turn = [line]
+            else:
+                # Continue building current turn (User question or Assistant response)
+                current_turn.append(line)
+        
+        # Add the last turn if it exists
+        if current_turn:
+            turns.append('\n'.join(current_turn))
+        
+        # Keep only the last max_turns complete turns
+        if len(turns) > max_turns:
+            trimmed_turns = turns[-max_turns:]
+            trimmed_history = '\n\n'.join(trimmed_turns)  # Add empty line between turns
+            print(f"[DEBUG CREW] Trimmed history from {len(turns)} to {len(trimmed_turns)} complete turns")
+            return trimmed_history
+        else:
+            return '\n\n'.join(turns)  # Add empty line between turns
+
     def chat(self, query: str, save_to_file: str = None, history: str = None, output_log_file: str = None) -> str:
         """Process a chat query for ITNB AG"""
         try:
@@ -238,6 +275,9 @@ Language:"""
             
             if not query or not query.strip():
                 return "Error: Please provide a valid question or query."
+            
+            # Trim history to prevent context bloat
+            history = self._trim_history(history) if history else ""
             
             # Translate the query (classification always returns 'website' for ITNB AG)
             translated_query, query_type = self._translate_and_classify(query)
@@ -253,10 +293,10 @@ Language:"""
                 groundx_results = self._groundx_cache[cache_key]
             else:
                 groundx_results = groundx_tool._run(translated_query)
-                if not groundx_results.startswith("Error:"):
+                if not groundx_results.startswith("error"):
                     self._groundx_cache[cache_key] = groundx_results
             
-            if groundx_results.startswith("Error:"):
+            if groundx_results.startswith("Error"):
                 groundx_results = "There is no available information about ITNB AG for me to assist you."
             
             # Create unified prompt based on query type (always 'website' for ITNB AG)
@@ -271,6 +311,8 @@ Language:"""
                             {groundx_results}
 
                             Answer:"""
+
+            print(f"\n\n\n[DEBUG PROMPT] User prompt: {user_prompt} \n\n\n")
             
             # Direct LLM call (skip CrewAI overhead)
             print(f"[DEBUG CREW] Making direct LLM call for ITNB AG {query_type} mode")

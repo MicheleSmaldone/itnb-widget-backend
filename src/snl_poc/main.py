@@ -5,7 +5,7 @@ import warnings
 from dotenv import load_dotenv
 import datetime
 import logging
-from crew import SnlPoc  # Import Phoenix version
+from crew import SnlPoc  # Import itnb version
 import time
 
 # Silence all loggers by default
@@ -45,7 +45,7 @@ def run():
     
     # Create a session-specific log file name with timestamp
     session_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    session_log_file = os.path.join(output_dir, f"phoenix_session_{session_timestamp}.txt")
+    session_log_file = os.path.join(output_dir, f"itnb_session_{session_timestamp}.txt")
     
     print("\n=== ITNB Assistant ===")
     print("Ask me about ITNB's AI solutions, cloud infrastructure,")
@@ -74,7 +74,7 @@ def run():
         if user_input.lower() == "save":
             # Generate a filename with timestamp
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            save_to_file = os.path.join(output_dir, f"phoenix_conversation_{timestamp}.md")
+            save_to_file = os.path.join(output_dir, f"itnb_conversation_{timestamp}.md")
             
             # Get the last response to save
             if history:
@@ -95,7 +95,7 @@ def run():
         
         # Create dynamic filename for automatic saving
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        auto_save_file = os.path.join(output_dir, f"phoenix_response_{timestamp}.md")
+        auto_save_file = os.path.join(output_dir, f"itnb_response_{timestamp}.md")
         
         # Use the crew's chat method which supports file saving
         start = time.time()
@@ -113,7 +113,7 @@ def run():
         print(f"Assistant: {response}")
         print(f"\nResponse automatically saved to: {auto_save_file}")
 
-def test_phoenix():
+def test_itnb():
     """Test the ITNB assistant with sample queries"""
     print("\n=== Testing ITNB Assistant ===")
     
@@ -140,6 +140,6 @@ def test_phoenix():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--test":
-        test_phoenix()
+        test_itnb()
     else:
         run()
