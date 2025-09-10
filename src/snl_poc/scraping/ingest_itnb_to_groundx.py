@@ -29,7 +29,7 @@ class ITNBGroundXIngester:
         )
         
         # Set the data directory to ITNB scrape output
-        self.data_dir = Path(__file__).parent / "scrape_out"
+        self.data_dir = Path(__file__).parent / "scrape_out_cleaned"
         
         logger.info(f"Initialized ITNB GroundX Ingester")
         logger.info(f"API Base URL: {base_url}")

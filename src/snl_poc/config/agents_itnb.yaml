@@ -36,7 +36,7 @@ rag_agent:
          - Convert any list of 2+ items into bullet points using *
       5. **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
          team member information with image URLs in this format:
-         "image": {"url": "https://...", "alt": "...", "type": "external_url"}
+         "image": {"name": "...", "title": "...", "image": "https://www.itnb.ch/img/...", "description": "..."}
          Then include the image at the END of your response (before sources) as: ![Team Member](URL)
          Only include images for the specific team members mentioned in the question.
          if no images are available, don't include them and don't mention them.

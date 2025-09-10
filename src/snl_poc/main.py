@@ -5,7 +5,7 @@ import warnings
 from dotenv import load_dotenv
 import datetime
 import logging
-from crew_phoenix import SnlPoc  # Import Phoenix version
+from crew import SnlPoc  # Import Phoenix version
 import time
 
 # Silence all loggers by default

@@ -14,7 +14,7 @@ chat_task:
       - Use *italics* for emphasis words (compliance, sovereignty, security, etc.)
       - Use bullet points (*) for any list of 2 or more items
     • **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
-      image URLs in format "image": {"url": "https://...", "type": "external_url"}, 
+      image URLs in format {"name": "...", "title": "...", "image": "https://www.itnb.ch/img/...", "description": "..."}
       include the image at the END of your response (before sources) as: ![Team Member](URL)
       Only include images for the specific team members mentioned.
     • Every URL already appears as [Source](URL) inside the context.
@@ -48,7 +48,7 @@ website_chat_task:
       - Use *italics* for emphasis words (compliance, sovereignty, security, etc.)
       - Use bullet points (*) for any list of 2 or more items
     • **TEAM MEMBER IMAGES**: When discussing specific team members, if the JSON data contains 
-      image URLs in format "image": {"url": "https://...", "type": "external_url"}, 
+      image URLs in format {"name": "...", "title": "...", "image": "https://www.itnb.ch/img/...", "description": "..."}, 
       include the image at the END of your response (before sources) as: ![Team Member](URL)
       Only include images for the specific team members mentioned.
     • Every URL already appears as [Source](URL) inside the context.

@@ -13,7 +13,7 @@ for noisy_logger in [
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from src.snl_poc.crew_phoenix import SnlPoc
+from src.snl_poc.crew import SnlPoc
 from fastapi.responses import JSONResponse
 import traceback
 
@@ -26,7 +26,6 @@ app.add_middleware(
         "http://localhost:3000", 
         "http://localhost:3001",
         "https://*.vercel.app",
-        "https://itnb-ui-kq2han5kd-michelesmaldones-projects.vercel.app/" 
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -56,7 +55,6 @@ async def chat_endpoint(req: ChatRequest):
         print(f"[API DEBUG] Result type: {type(result)}")
         print(f"[API DEBUG] Result length: {len(result)} chars")
         print(f"[API DEBUG] Result content: {result}")
-        print(f"[API DEBUG] Contains PRIMARY_SOURCE marker: {'[PRIMARY_SOURCE:' in result}")
         return ChatResponse(response=result)
     except Exception as e:
         # print(f"[BACKEND DEBUG] Error in chat_endpoint: {e}")
